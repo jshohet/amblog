@@ -13,12 +13,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User{
   id Int @id @default(autoincrement())
-  externalID Int? @unique
-  email String @unique
-  password String
+  externalID String? @unique
+  email String? @unique
+  password String?
   name String?
   posts Post[]
 }
@@ -26,8 +25,9 @@ model User{
 model Post{
   id Int @id @default(autoincrement())
   createdAt DateTime
-  authorId Int @unique
-  user User @relation(fields:[authorId], references:[externalID])
+  updatedAt DateTime @updatedAt
+  authorId String
+  author User @relation(fields:[authorId], references:[externalID])
   title String
   text Json
   mood String
