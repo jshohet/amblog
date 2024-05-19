@@ -16,7 +16,7 @@ datasource db {
 
 model User{
   id Int @id @default(autoincrement())
-  externalID String? @unique
+  externalID Int? @unique
   email String @unique
   password String
   name String?
@@ -26,7 +26,7 @@ model User{
 model Post{
   id Int @id @default(autoincrement())
   createdAt DateTime
-  authorId String @unique
+  authorId Int @unique
   user User @relation(fields:[authorId], references:[externalID])
   title String
   text Json
