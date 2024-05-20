@@ -1,5 +1,7 @@
 // "use client";
 
+import Tiptap from "../components/tiptap/tiptap";
+
 // import { getServerSession } from "next-auth";
 // import { useSession } from "next-auth/react";
 // import { authOptions } from "../api/auth/[...nextauth]/route";
@@ -26,5 +28,7 @@ export default async function Dashboard() {
   //     });
   //   }
 
-  return <div>super secret page</div>;
+  return <div className='mx-[200px] mt-10'>
+    <Tiptap />
+  </div>;
 }

@@ -79,8 +79,7 @@ export const authOptions: NextAuthOptions = {
     async signIn({account, profile}){
       if(!profile?.email){
         throw new Error('no profile')
-      }
-
+      }      
       await prisma.user.upsert({
         where: {
           email: profile.email,

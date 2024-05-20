@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { EB_Garamond, Libre_Baskerville, Domine } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./providers/authProvider";
 import Header from "./components/header/Header";
 
-const inter = Inter({ subsets: ["latin"] });
+const libreBaskerville = Libre_Baskerville({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={libreBaskerville.className}>
         <AuthProvider>
           <Header />
           {children}

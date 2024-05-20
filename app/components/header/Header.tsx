@@ -7,7 +7,7 @@ const Header = async () => {
   const session = await getServerSession(authOptions);
 
   return (
-    <div className="flex gap-2 w-full justify-end py-4 px-2 bg-[#5f2b4f] text-white/70">
+    <div className="flex gap-2 w-full justify-end py-4 px-2 bg-[#5f2b4f] text-white/70 shadow-lg">
       {session?.user && (
         <div className="flex items-center">
           <img
