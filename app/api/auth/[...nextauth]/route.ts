@@ -1,8 +1,6 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import { PrismaClient } from "@prisma/client";
-import { compare } from "bcrypt";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!
