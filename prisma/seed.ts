@@ -18,14 +18,15 @@ async function main() {
     },
   });
   const userAndPosts = await prisma.post.updateMany({
-    where:{
-      authorId: "ksa"
+    where: {
+      authorId: "ksa",
     },
     data: [
       {
         authorId: "ksa",
         title: "Prisma Day 2020",
         createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
         text: "sdfsf",
         mood: "sad",
         tags: ["hello", "world"],
@@ -34,6 +35,7 @@ async function main() {
         authorId: "ksa",
         title: "How to write a Prisma schema",
         createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
         text: "asdasd",
         mood: "happy",
         tags: ["hello", "world"],

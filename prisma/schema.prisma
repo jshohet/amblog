@@ -24,8 +24,8 @@ model User{
 
 model Post{
   id Int @id @default(autoincrement())
-  createdAt DateTime
-  updatedAt DateTime @updatedAt
+  createdAt DateTime 
+  updatedAt DateTime
   authorId String
   author User @relation(fields:[authorId], references:[externalID])
   title String

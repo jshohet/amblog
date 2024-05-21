@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { EB_Garamond, Libre_Baskerville, Domine } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./providers/authProvider";
+import PostProvider from "./providers/postProvider";
 import Header from "./components/header/Header";
 
 const libreBaskerville = Libre_Baskerville({
@@ -23,8 +24,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={libreBaskerville.className}>
         <AuthProvider>
-          <Header />
-          {children}
+          <PostProvider>
+            <Header />
+            {children}
+          </PostProvider>
         </AuthProvider>
       </body>
     </html>

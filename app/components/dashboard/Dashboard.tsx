@@ -1,5 +1,6 @@
 
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { Post } from "@/app/types/PostType";
 import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import React, { useState } from "react";
@@ -11,16 +12,19 @@ import React, { useState } from "react";
 
 
 const Dashboard = async() => {
-  const session = await getServerSession(authOptions);
+  const session:any = await getServerSession(authOptions);
 
+  const postsByUser: Post[] = await prisma.post.findMany({
+    where:{
+        authorId: "ksa"
+    }
+  })
 
-//   const postsByUser = await prisma.post.findMany({
-//     where:{
-//         authorId: 
-//     }
-//   })
-
-  return <div></div>;
+  return <div>   
+    {postsByUser && postsByUser?.map((post: Post, i:any) =>
+      <div key={i}>{post.title} {JSON.stringify(post.text)}</div>
+    )}
+    </div>;
 };
 
 export default Dashboard;
