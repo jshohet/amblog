@@ -8,7 +8,7 @@ const Header = async () => {
   const session = await getServerSession(authOptions);
 
   return (
-    <div className="flex justify-center py-4 px-2 w-full bg-[#5f2b4f] text-white/70 shadow-lg">
+    <div className="flex justify-center items-center py-4 px-2 w-full bg-[#5f2b4f] text-white/70 shadow-lg">
       <div className="w-full">
         <HomeButton />
       </div>
@@ -24,8 +24,7 @@ const Header = async () => {
             />
             <p className="ml-2 text-xl">{session.user.name}</p>
           </div>
-        )}
-        
+        )}        
         {!session && <LoginButton />}
         {session && <LogoutButton />}
       </div>

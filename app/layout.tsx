@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { EB_Garamond, Libre_Baskerville, Domine } from "next/font/google";
+import {  Libre_Baskerville} from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./providers/authProvider";
 import PostProvider from "./providers/postProvider";
 import Header from "./components/header/Header";
+
 
 const libreBaskerville = Libre_Baskerville({
   weight: ["400", "700"],
@@ -21,12 +22,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="bg-one">
       <body className={libreBaskerville.className}>
         <AuthProvider>
           <PostProvider>
-            <Header />
-            {children}
+              <Header />
+              {children}
           </PostProvider>
         </AuthProvider>
       </body>

@@ -17,17 +17,14 @@ async function main() {
       externalID: "ksa",
     },
   });
-  const userAndPosts = await prisma.post.updateMany({
-    where: {
-      authorId: "ksa",
-    },
+  const userAndPosts = await prisma.post.createMany({
     data: [
       {
         authorId: "ksa",
         title: "Prisma Day 2020",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        text: "sdfsf",
+        text: "sadasdsad",
         mood: "sad",
         tags: ["hello", "world"],
       }, // Populates authorId with user's id
