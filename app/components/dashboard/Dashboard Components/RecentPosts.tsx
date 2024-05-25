@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Post } from "@/app/types/PostType";
-import { Pagination } from "@nextui-org/pagination";
+import { Pagination, PaginationCursor } from "@nextui-org/pagination";
 import { usePostContext } from "@/app/hooks/usePostContext";
 import axios from "axios";
 import { convertMoodToEmoji } from "@/app/utils/moodConversion";
@@ -11,14 +11,17 @@ import { FaEdit, FaTrashAlt, FaTags } from "react-icons/fa";
 const RecentPost = () => {
   //global context provider for current user posts
   const { posts, setPosts } = usePostContext();
+  const [isLoading, setIsLoading] = useState(false);
 
   //load all posts for logged in user
   useEffect(() => {
     const postsByUser = async () => {
+      setIsLoading(true);
       await axios
         .get("/api/posts")
         .then((response) => {
           setPosts(response.data);
+          setIsLoading(false);
         })
         .catch((error) => console.log(error));
     };
@@ -27,7 +30,7 @@ const RecentPost = () => {
 
   //pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const recordsPerPage = 5;
+  const recordsPerPage = 2;
   const lastIndex = currentPage * recordsPerPage;
   const firstIndex = lastIndex - recordsPerPage;
   const records = posts.slice(firstIndex, lastIndex);
@@ -37,7 +40,7 @@ const RecentPost = () => {
     ? records.map((post: Post) => (
         <div
           key={post.id}
-          className="w-[300px] rounded-b-lg bg-[#D9D9D9] shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)]">
+          className="w-[600px] mb-4 rounded-b-lg bg-[#D9D9D9] shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)]">
           <div className="bg-three flex justify-between rounded-t-lg p-4 text-white ">
             <div>
               <h2 className="font-bold text-xl"> {post.title}</h2>
@@ -54,7 +57,7 @@ const RecentPost = () => {
           <div className="  p-4">
             <p>{JSON.stringify(post.text)}</p>
             <div className="flex gap-2">
-              <FaTags size={25} className="rotate-90" />
+              <FaTags size={25} className="rotate-90 text-four" />
               {post.tags.map((tag, i) => (
                 <div key={i}>
                   <p>{tag}</p>
@@ -68,23 +71,55 @@ const RecentPost = () => {
 
   return (
     <div>
-      <div className="grid grid-cols-3 gap-4">{recentPostsMap}</div>
-      <div className="flex flex-col mt-10">
-        <h3 className="text-lg">Pages: </h3>
+      <h2 className="text-xl mb-10 font-semibold text-five">Recent Posts</h2>
+      <div className="flex flex-col mb-10">
+        <h3 className="text-lg text-five">Page: {currentPage} </h3>
         <Pagination
           total={npages}
           variant="bordered"
           initialPage={1}
           onChange={setCurrentPage}
+          page={currentPage}
           siblings={1}
           showControls={true}
+          loop={true}
+          disableAnimation={false}
+          disableCursorAnimation={false}
           classNames={{
             base: "mt-2 w-fit",
             wrapper: "gap-0 overflow-visible h-8 rounded border border-divider",
             item: "w-8 h-8 text-small rounded-none bg-transparent",
             cursor: "hidden",
-            prev: "hidden",
-            next: "hidden",
+            prev: "",
+            next: "rotate-18",
+          }}
+        />
+      </div>
+      {isLoading ? (
+        <div>Posts are loading, please wait...</div>
+      ) : (
+        <div className="">{recentPostsMap}</div>
+      )}
+      <div className="flex flex-col ori mt-10">
+        <h3 className="text-lg text-five">Page: {currentPage} </h3>
+        <Pagination
+          total={npages}
+          variant="bordered"
+          initialPage={1}
+          onChange={setCurrentPage}
+          page={currentPage}
+          siblings={1}
+          showControls={true}
+          loop={true}
+          disableAnimation={false}
+          disableCursorAnimation={false}
+          classNames={{
+            base: "mt-2 w-fit",
+            wrapper: "gap-0 overflow-visible h-8 rounded border border-divider",
+            item: "w-8 h-8 text-small rounded-none bg-transparent",
+            cursor: "hidden",
+            prev: "",
+            next: "rotate-18",
           }}
         />
       </div>

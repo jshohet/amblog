@@ -7,8 +7,8 @@ const Welcome = async () => {
      const firstName = session.user.name.split(" ")[0];
 
   return (
-    <div>
-        <h2 className='text-2xl mt-20 mb-10'>Welcome back, {firstName}!</h2>
+    <div className="">
+        <h2 className='text-2xl mt-20 mb-10 text-five font-bold'>Welcome back, {firstName}!</h2>
     </div>
   )
 }
