@@ -5,14 +5,24 @@ import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import { PiCaretDownBold } from "react-icons/pi";
+import { getYearsAndMonths } from "@/app/utils/getYears";
 
 const Archive = () => {
   const { posts, setPosts } = usePostContext();
   const [open, setOpen] = useState(false);
 
+
+  const yearsInPosts = getYearsAndMonths(posts).map((entry, idx) =>
+    <div key={idx}><h2>{entry.year}</h2>
+    {entry.months.map((month, idx) =>
+    <div key={idx}>{month}</div>
+    )}
+    </div>  
+  ); 
+
   return (
     <div
-      className="ml-24 p-4 rounded-lg shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)]"
+      className="ml-24 h-fit p-4 rounded-lg shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)]"
       style={{
         background: `linear-gradient(180deg, #A38994 0%, #D1D0CC 100%)`,
       }}>
@@ -21,7 +31,8 @@ const Archive = () => {
         expanded={open}
         onChange={() => setOpen(!open)}
         className="bg-four shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)] text-one">
-        <AccordionSummary expandIcon={<PiCaretDownBold size={25} className="text-one"/>}>
+        <AccordionSummary
+          expandIcon={<PiCaretDownBold size={25} className="text-one" />}>
           <h2 className="text-xl">Filter Options</h2>
         </AccordionSummary>
         <AccordionDetails>
@@ -45,6 +56,7 @@ const Archive = () => {
           </form>
         </AccordionDetails>
       </Accordion>
+      {yearsInPosts}
     </div>
   );
 };

@@ -1,10 +1,11 @@
 
-import React, { useState } from "react";
+import React from "react";
 import RecentPost from "./Dashboard Components/RecentPosts";
 import Welcome from "./Dashboard Components/Welcome";
 import Archive from "./Dashboard Components/Archive";
+import Socials from "./Dashboard Components/Socials";
 
-//most recent post for user - edit button, delete button, timestamp, title, images, moodlet
+//most recent post for user - edit button, delete button, timestamp, title, *images*, moodlet
 //create new post button
 //archive display
 
@@ -13,7 +14,7 @@ const Dashboard = async () => {
 
   return (
     <div className="w-full">
-      <h1 className="absolute top-[500px] left-[850px] mr-24">socials here</h1>
+      <Socials />
       <div className="px-[300px]">
         <Welcome />
         <div className="flex">

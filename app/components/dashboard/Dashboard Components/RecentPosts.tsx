@@ -72,7 +72,7 @@ const RecentPost = () => {
   return (
     <div>
       <h2 className="text-xl mb-10 font-semibold text-five">Recent Posts</h2>
-      <div className="flex flex-col mb-10">
+      {/* <div className="flex flex-col mb-10">
         <h3 className="text-lg text-five">Page: {currentPage} </h3>
         <Pagination
           total={npages}
@@ -91,10 +91,10 @@ const RecentPost = () => {
             item: "w-8 h-8 text-small rounded-none bg-transparent",
             cursor: "hidden",
             prev: "",
-            next: "rotate-18",
+            next: "rotate-180",
           }}
         />
-      </div>
+      </div> */}
       {isLoading ? (
         <div>Posts are loading, please wait...</div>
       ) : (
@@ -119,7 +119,7 @@ const RecentPost = () => {
             item: "w-8 h-8 text-small rounded-none bg-transparent",
             cursor: "hidden",
             prev: "",
-            next: "rotate-18",
+            next: "",
           }}
         />
       </div>
