@@ -1,24 +1,71 @@
 "use client";
 import { usePostContext } from "@/app/hooks/usePostContext";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import { PiCaretDownBold } from "react-icons/pi";
-import { getYearsAndMonths } from "@/app/utils/getYears";
+import { getArchiveHeaders } from "@/app/utils/getArchiveHeaders";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { Months } from "@/app/enums/MonthsEnum";
 
 const Archive = () => {
   const { posts, setPosts } = usePostContext();
   const [open, setOpen] = useState(false);
+  const [startDate, setStartDate] = useState(new Date("2024-03-25"));
+  const [endDate, setEndDate] = useState(new Date("2024-07-25"));
+  const [error, setError] = useState(false);
+  const [archiveHeaders, setArchiveHeaders] = useState(getArchiveHeaders(posts))
 
+  useEffect(() => {
+    if (startDate > endDate) {
+      setError(true);
+    } else {
+      setError(false);
+    }
+  }, [startDate, endDate]);
 
-  const yearsInPosts = getYearsAndMonths(posts).map((entry, idx) =>
-    <div key={idx}><h2>{entry.year}</h2>
-    {entry.months.map((month, idx) =>
-    <div key={idx}>{month}</div>
-    )}
-    </div>  
-  ); 
+  useEffect(() =>{
+    setArchiveHeaders(getArchiveHeaders(posts))
+  },[posts])
+
+  console.log(archiveHeaders, startDate, endDate)
+
+  // const handleFormSubmit = (e: React.MouseEvent<HTMLDivElement>) => {
+  //   e.preventDefault();
+  //   console.log((getArchiveHeaders(posts.filter((e) => {
+  //     return (
+  //       new Date(e.createdAt) <= startDate && new Date(e.createdAt) >= endDate
+  //     );
+  //   }))));
+  // };
+
+  const yearsInPosts = Object.keys(archiveHeaders).map((year) => (
+    <Accordion className="bg-four shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)] rounded-[0.2rem] text-one">
+      <AccordionSummary
+        expandIcon={<PiCaretDownBold size={25} className="text-one" />}>
+        <h2>{year}</h2>
+      </AccordionSummary>
+      <AccordionDetails>
+        {Object.keys(archiveHeaders[year]).map((month: any) => (
+          <Accordion className="bg-one rounded-[0.2rem] mb-2">
+            <AccordionSummary
+              expandIcon={<PiCaretDownBold size={25} className="text-five" />}>
+              <h2>{Months[month]}</h2>
+            </AccordionSummary>
+            {archiveHeaders[year][month].map((date, idx) => (
+              <div
+                key={idx}
+                className="mx-3 pb-1 hover:text-three/70 hover:font-semibold hover:transition-all hover:duration-100 cursor-pointer">
+                {date.id} - {date.title}
+              </div>
+            ))}
+          </Accordion>
+        ))}
+      </AccordionDetails>
+    </Accordion>
+  ));
 
   return (
     <div
@@ -30,33 +77,56 @@ const Archive = () => {
       <Accordion
         expanded={open}
         onChange={() => setOpen(!open)}
-        className="bg-four shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)] text-one">
+        className="bg-four shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)] rounded-[0.2rem] text-one">
         <AccordionSummary
           expandIcon={<PiCaretDownBold size={25} className="text-one" />}>
           <h2 className="text-xl">Filter Options</h2>
         </AccordionSummary>
-        <AccordionDetails>
-          <form className="flex flex-col gap-4">
-            <div>
+        <AccordionDetails className="">
+          <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-[30%_auto]">
               <label htmlFor="">Start Date</label>
-              <input className="mx-10 rounded-sm w-28" />
+              <DatePicker
+                className="mx-10 rounded-sm w-28 text-black p-2"
+                selected={startDate}
+                onChange={(date: Date) => setStartDate(date)}
+              />
             </div>
-            <div>
+            <div className="grid grid-cols-[30%_auto]">
               <label htmlFor="">End Date</label>
-              <input className="mx-10 rounded-sm w-28" />
+              <DatePicker
+                className="mx-10 rounded-sm w-28 text-black p-2"
+                selected={endDate}
+                onChange={(date: Date) => setEndDate(date)}
+              />
             </div>
+            {error && (
+              <p className="text-red-500/85 font-semibold">
+                Please select a valid date range.
+              </p>
+            )}
             <div className="mt-10">
               <h2>Tags</h2>
             </div>
             <div className="flex justify-end">
-              <button className="bg-three px-4 text-lg py-2 w-fit rounded-md">
-                Filter
-              </button>
+              {error ? (
+                <div className="bg-slate-500 px-4 text-lg py-2 w-fit rounded-md cursor-not-allowed">
+                  Filter
+                </div>
+              ) : (
+                <div
+                  // onClick={handleFormSubmit}
+                  className="bg-three px-4 text-lg py-2 w-fit rounded-md cursor-pointer">
+                  Filter
+                </div>
+              )}
             </div>
-          </form>
+          </div>
         </AccordionDetails>
       </Accordion>
-      {yearsInPosts}
+      <div className="h-fit mt-2 shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)]">
+        {yearsInPosts}
+      </div>
     </div>
   );
 };

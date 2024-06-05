@@ -12,6 +12,9 @@ export async function GET(
       where: {
         authorId: "ksa",
       },
+      orderBy:{
+        createdAt: 'desc'
+      }
     });
     return NextResponse.json(postsByUser, {status: 200})
 }

@@ -5,7 +5,7 @@ import { signIn, signOut } from "next-auth/react";
 export const LoginButton = () => {
   const handleSignIn = async () => {
     await signIn("google", {
-      // callbackUrl: "/dashboard",
+       callbackUrl: "/",
     });
   };
   return (
