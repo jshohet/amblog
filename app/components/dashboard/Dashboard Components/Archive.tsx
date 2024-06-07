@@ -1,6 +1,6 @@
 "use client";
 import { usePostContext } from "@/app/hooks/usePostContext";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -9,6 +9,7 @@ import { getArchiveHeaders } from "@/app/utils/getArchiveHeaders";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Months } from "@/app/enums/MonthsEnum";
+import { useSelectedPostContext } from "@/app/hooks/useSelectedPostContext";
 
 const Archive = () => {
   const { posts, setPosts } = usePostContext();
@@ -16,7 +17,10 @@ const Archive = () => {
   const [startDate, setStartDate] = useState(new Date("2024-03-25"));
   const [endDate, setEndDate] = useState(new Date("2024-07-25"));
   const [error, setError] = useState(false);
-  const [archiveHeaders, setArchiveHeaders] = useState(getArchiveHeaders(posts))
+  const [archiveHeaders, setArchiveHeaders] = useState(
+    getArchiveHeaders(posts)
+  );
+  const { selectedPost, setSelectedPost } = useSelectedPostContext();
 
   useEffect(() => {
     if (startDate > endDate) {
@@ -26,30 +30,42 @@ const Archive = () => {
     }
   }, [startDate, endDate]);
 
-  useEffect(() =>{
-    setArchiveHeaders(getArchiveHeaders(posts))
-  },[posts])
+  useEffect(() => {
+    setArchiveHeaders(getArchiveHeaders(posts));
+  }, [posts]);
 
-  console.log(archiveHeaders, startDate, endDate)
+  const handleFormSubmit = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      setArchiveHeaders(
+        getArchiveHeaders(
+          posts.filter((x) => {
+            return (
+              new Date(x.createdAt) >= startDate &&
+              new Date(x.createdAt) <= new Date(endDate)
+            );
+          })
+        )
+      );
+    },
+    [startDate, endDate, posts]
+  );
 
-  // const handleFormSubmit = (e: React.MouseEvent<HTMLDivElement>) => {
-  //   e.preventDefault();
-  //   console.log((getArchiveHeaders(posts.filter((e) => {
-  //     return (
-  //       new Date(e.createdAt) <= startDate && new Date(e.createdAt) >= endDate
-  //     );
-  //   }))));
-  // };
+  const handleArchivePostClick = (dateId: number) =>{
+    const index = posts.findIndex((x) => x.id === dateId);
+    setSelectedPost(posts[index])
+  }
 
-  const yearsInPosts = Object.keys(archiveHeaders).map((year) => (
-    <Accordion className="bg-four shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)] rounded-[0.2rem] text-one">
+  const yearsInPosts = Object.keys(archiveHeaders).map((year, idx) => (
+    <Accordion
+      key={idx}
+      className="bg-four shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)] rounded-[0.2rem] text-one">
       <AccordionSummary
         expandIcon={<PiCaretDownBold size={25} className="text-one" />}>
         <h2>{year}</h2>
       </AccordionSummary>
       <AccordionDetails>
-        {Object.keys(archiveHeaders[year]).map((month: any) => (
-          <Accordion className="bg-one rounded-[0.2rem] mb-2">
+        {Object.keys(archiveHeaders[year]).map((month: any, idx) => (
+          <Accordion key={idx} className="bg-one rounded-[0.2rem] mb-2">
             <AccordionSummary
               expandIcon={<PiCaretDownBold size={25} className="text-five" />}>
               <h2>{Months[month]}</h2>
@@ -57,8 +73,9 @@ const Archive = () => {
             {archiveHeaders[year][month].map((date, idx) => (
               <div
                 key={idx}
+                onClick={() => handleArchivePostClick(date.id)}
                 className="mx-3 pb-1 hover:text-three/70 hover:font-semibold hover:transition-all hover:duration-100 cursor-pointer">
-                {date.id} - {date.title}
+                {new Date(date.createdAt).getDate()} - {date.title}
               </div>
             ))}
           </Accordion>
@@ -89,7 +106,7 @@ const Archive = () => {
               <DatePicker
                 className="mx-10 rounded-sm w-28 text-black p-2"
                 selected={startDate}
-                onChange={(date: Date) => setStartDate(date)}
+                onChange={(date: Date) => setStartDate(new Date(date))}
               />
             </div>
             <div className="grid grid-cols-[30%_auto]">
@@ -97,7 +114,7 @@ const Archive = () => {
               <DatePicker
                 className="mx-10 rounded-sm w-28 text-black p-2"
                 selected={endDate}
-                onChange={(date: Date) => setEndDate(date)}
+                onChange={(date: Date) => setEndDate(new Date(date))}
               />
             </div>
             {error && (
@@ -115,7 +132,7 @@ const Archive = () => {
                 </div>
               ) : (
                 <div
-                  // onClick={handleFormSubmit}
+                  onClick={handleFormSubmit}
                   className="bg-three px-4 text-lg py-2 w-fit rounded-md cursor-pointer">
                   Filter
                 </div>

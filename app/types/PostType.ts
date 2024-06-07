@@ -1,5 +1,5 @@
 import { JsonValue } from "@prisma/client/runtime/library"
-import { Dispatch, Key, SetStateAction } from "react"
+import { Dispatch, SetStateAction } from "react"
 
 export type Post={
     id: number,

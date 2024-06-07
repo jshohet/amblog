@@ -4,7 +4,8 @@ import { Key } from "react";
 type Header = {
   id: number,
   title: string,
-  tags: string[]
+  tags: string[],
+  createdAt: Date
 }
 
 export const getArchiveHeaders = (headers: Post[]) => {
@@ -22,7 +23,8 @@ export const getArchiveHeaders = (headers: Post[]) => {
     lookup[year][month].push({
       id: x.id,
       title: x.title,
-      tags: x.tags
+      tags: x.tags,
+      createdAt: x.createdAt
     });
   });
 
