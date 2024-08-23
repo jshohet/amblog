@@ -18,6 +18,7 @@ import { LuHeading1, LuHeading2, LuHeading3 } from "react-icons/lu";
 import TextAlign from "@tiptap/extension-text-align";
 import Underline from "@tiptap/extension-underline";
 import Typography from "@tiptap/extension-typography";
+import ImageResize from "tiptap-extension-resize-image";
 import { useState } from "react";
 import { HexColorPicker } from "react-colorful";
 import TextStyle from "@tiptap/extension-text-style";
@@ -29,7 +30,8 @@ const Tiptap = () => {
       StarterKit,
       Typography,
       Underline,
-      Image,
+      Image.configure({ inline: true }),
+      ImageResize,
       TextStyle,
       TextAlign.configure({
         types: ["heading", "paragraph"],
@@ -46,13 +48,16 @@ const Tiptap = () => {
     editorProps: {
       attributes: {
         class:
-          "prose max-w-none [&_ol]:list-decimal [&_ul]:list-disc h-[800px] w-[800px] rounded-md border-2 p-2 border-five bg-white/50",
+          "prose [&_ol]:list-decimal [&_ul]:list-disc min-h-[800px] h-auto min-w-[800px] w-auto max-w-[1200px] mb-10 rounded-md border-2 p-2 border-five bg-white/50",
       },
     },
     autofocus: true,
     injectCSS: false,
   });
   const [color, setColor] = useState("#aabbcc");
+  const [selectedImage, setSelectedImage] = useState<Blob | MediaSource>(
+    new Blob()
+  );
   const handleColorChange = (color: any) => {
     if (editor) {
       editor.chain().focus().setColor(color).run();
@@ -60,11 +65,24 @@ const Tiptap = () => {
     }
   };
 
+  const handleSetImage = (): any => {
+    if (editor) {
+      editor
+        .chain()
+        .focus()
+        .setImage({ src: URL.createObjectURL(selectedImage) })
+        .run();
+      editor.commands.createParagraphNear();
+      editor.commands.setTextSelection(editor.state.selection.to);
+      setSelectedImage(new Blob());
+    }
+  };
+
   const Menu = () => {
     return (
       <div className="">
         {editor && (
-          <div className="flex mb-2">
+          <div className="mb-2">
             <button
               onClick={() => editor.chain().focus().toggleBold().run()}
               className={`border-2 border-five p-1 m-0.5 hover:bg-three rounded-lg ${
@@ -162,6 +180,41 @@ const Tiptap = () => {
               }`}>
               <FaAlignRight size={30} />
             </button>
+            {/* <button onClick={addImage}>Set image</button> */}
+            <div className="flex items-center justify-center gap-2 mt-2">
+              <label
+                htmlFor="image_upload"
+                className="border-2 border-five p-1 m-0.5 hover:bg-three hover:text-one rounded-lg whitespace-nowrap">
+                Upload Image
+              </label>
+              <input
+                type="file"
+                name="myImage"
+                id="image_upload"
+                className="hidden"
+                // Event handler to capture file selection and update the state
+                onChange={(event) => {
+                  //@ts-ignore
+                  setSelectedImage(event.target.files[0]); //Update the state with the selected image
+                }}
+              />
+              <button
+                className="border-2 border-five p-1 m-0.5 hover:bg-three hover:text-one rounded-lg whitespace-nowrap"
+                onClick={() => handleSetImage()}>
+                Set image
+              </button>
+            </div>
+            <div className="flex justify-center">
+              <p>
+                Selected image: {/*@ts-ignore */}
+                {selectedImage.name ? (
+                  //@ts-ignore
+                  <span>{selectedImage.name}</span>
+                ) : (
+                  <span>None</span>
+                )}
+              </p>
+            </div>
           </div>
         )}
       </div>
@@ -173,14 +226,16 @@ const Tiptap = () => {
 
     return (
       <div className="ml-2">
-        <button onClick={() => setColorOpen(!colorOpen)} className="border-2 text-four border-four rounded-lg mb-2 p-1 hover:bg-three hover:text-one">
+        <button
+          onClick={() => setColorOpen(!colorOpen)}
+          className="border-2 text-four border-four ml-[5px] w-[100px] h-auto rounded-lg mb-2 p-1 hover:bg-three hover:text-one">
           {colorOpen ? "Hide" : "Show"} Colors
         </button>
         {colorOpen && (
           <HexColorPicker
             color={color}
             onChange={(color) => handleColorChange(color)}
-            style={{ height: "500px", width: "100px", marginLeft:"5px"}}
+            style={{ height: "500px", width: "100px", marginLeft: "5px" }}
           />
         )}
       </div>
