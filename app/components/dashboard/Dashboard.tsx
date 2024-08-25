@@ -1,10 +1,10 @@
 
 import React from "react";
-import RecentPost from "./Dashboard Components/RecentPosts";
+
 import Welcome from "./Dashboard Components/Welcome";
-import Archive from "./Dashboard Components/Archive";
+
 import Socials from "./Dashboard Components/Socials";
-import Tiptap from "../tiptap/tiptap";
+import TiptapHandler from "./Dashboard Components/TiptapHandler";
 
 //most recent post for user - edit button, delete button, timestamp, title, *images*, moodlet
 //create new post button
@@ -18,11 +18,8 @@ const Dashboard = async () => {
       <Socials />
       <div className="px-[300px]">
         <Welcome />
-        <div className="w-full">
-          <Tiptap />
-          {/* <RecentPost />
-          <Archive /> */}
-        </div>
+        <TiptapHandler />
+        
       </div>
     </div>
   );

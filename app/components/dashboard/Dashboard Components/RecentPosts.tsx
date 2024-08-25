@@ -83,7 +83,7 @@ const RecentPost = () => {
           ) : (
             <div className="">{recentPostsMap}</div>
           )}
-          <div className="flex flex-col ori mt-10">
+          <div className="flex flex-col ori mt-10 rotate">
             <h3 className="text-lg text-five">Page: {currentPage} </h3>
             <Pagination
               total={npages}
