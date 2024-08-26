@@ -12,7 +12,7 @@ export default function SelectedPostProvider({
     const initialPost: Post = {
       id: 0,
       createdAt: new Date(),
-      authorId: '',
+      authorEmail: '',
       title: '',
       text: null,
       mood: '',

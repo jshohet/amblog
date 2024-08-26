@@ -14,8 +14,8 @@ import { useSelectedPostContext } from "@/app/hooks/useSelectedPostContext";
 const Archive = () => {
   const { posts, setPosts } = usePostContext();
   const [open, setOpen] = useState(false);
-  const [startDate, setStartDate] = useState(new Date("2024-03-25"));
-  const [endDate, setEndDate] = useState(new Date("2024-07-25"));
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [error, setError] = useState(false);
   const [archiveHeaders, setArchiveHeaders] = useState(
     getArchiveHeaders(posts)
@@ -53,6 +53,13 @@ const Archive = () => {
   const handleArchivePostClick = (dateId: number) =>{
     const index = posts.findIndex((x) => x.id === dateId);
     setSelectedPost(posts[index])
+  }
+
+  const handleDisplayAllClick = () =>{
+    setSelectedPost({
+      ...selectedPost,
+      id: 0
+    });
   }
 
   const yearsInPosts = Object.keys(archiveHeaders).map((year, idx) => (

@@ -5,7 +5,7 @@ export type Post={
     id: number,
     createdAt: Date,
     updatedAt?: Date | null,
-    authorId: string,
+    authorEmail: string,
     title: string,
     text: JsonValue | null,
     mood: string,

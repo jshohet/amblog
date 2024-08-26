@@ -26,6 +26,10 @@ import Image from "@tiptap/extension-image";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import { useSelectedPostContext } from "@/app/hooks/useSelectedPostContext";
+import { useEditorContext } from "@/app/hooks/useEditorStateContext";
 
 const Tiptap = () => {
   const editor = useEditor({
@@ -64,6 +68,11 @@ const Tiptap = () => {
   const [customDate, selectCustomDate] = useState<Date>(new Date());
   const [emoji, setEmoji] = useState<EmojiClickData>();
   const [tags, setTags] = useState<string[]>([]);
+  const { selectedPost, setSelectedPost } = useSelectedPostContext();
+  const { openEditor, setOpenEditor } = useEditorContext();
+
+  const client = axios.create({ baseURL: "/api/posts" });
+  const { data: session } = useSession();
 
   const handleColorChange = (color: any) => {
     if (editor) {
@@ -291,7 +300,7 @@ const Tiptap = () => {
           />
           <span className="text-base text-[#8a727c] ml-2">Click to change</span>
         </div>
-        
+
         {pickerOpen && (
           <EmojiPicker
             className="mt-2 ml-2"
@@ -305,9 +314,8 @@ const Tiptap = () => {
     );
   };
 
-  const TagsInput = () =>{
-    const inputRef = useRef<HTMLInputElement>(null)
-    console.log(inputRef)
+  const TagsInput = () => {
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key !== "Enter") return;
@@ -323,12 +331,11 @@ const Tiptap = () => {
       if (inputRef.current !== null) {
         inputRef.current.focus();
       }
-    }   
+    };
 
-    function removeTag(index:number) {
+    function removeTag(index: number) {
       setTags(tags.filter((el, i) => i !== index));
     }
-
 
     return (
       <div className="ml-2 mb-2 p-1 rounded-[3px] w-[250px] flex items-center flex-wrap gap-1">
@@ -343,7 +350,7 @@ const Tiptap = () => {
         />
         {tags.map((tag, index) => (
           <div
-            className="gap- py-1 px-2 rounded-2xl ml-2 whitespace-break-spaces break-all bg-two"
+            className=" py-1 px-2 rounded-2xl ml-1 whitespace-break-spaces break-all bg-two"
             key={index}>
             <span className="">{tag}</span>
             <span
@@ -355,7 +362,30 @@ const Tiptap = () => {
         ))}
       </div>
     );
-  }
+  };
+
+  const handlePostCreate = async () => {
+    if (session && session.user) {
+      await client
+        .post("", {
+          authorEmail: session.user.email,
+          title: "",
+          mood: "",
+          text: "",
+          tags: [],
+        })
+        .then((response) => {
+          setSelectedPost({
+            ...selectedPost,
+            id: 0,
+          });
+
+          setOpenEditor(false);
+          // console.log(response);
+        })
+        .catch((error) => console.error(error));
+    }
+  };
 
   return (
     <div className="flex flex-col items-center">
@@ -364,11 +394,18 @@ const Tiptap = () => {
         <EditorContent editor={editor} />
         <ColorPicker />
         <div>
-          <h2 className="text-xl font-semibold ml-2 mt-1 mb-2">Entry Information:</h2>
+          <h2 className="text-xl font-semibold ml-2 mt-1 mb-2">
+            Entry Information:
+          </h2>
           <TagsInput />
           <PickCustomDate />
           <PickEmoji />
         </div>
+      </div>
+      <div
+        onClick={handlePostCreate}
+        className="shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)] bg-darkerTwo select-none mb-10 hover:underline p-1 m-0.5 text-2xl font-semibold hover:bg-three hover:text-one cursor-pointer rounded-lg">
+        Submit Post
       </div>
     </div>
   );

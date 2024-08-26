@@ -20,7 +20,7 @@ async function main() {
   const userAndPosts = await prisma.post.createMany({
     data: [
       {
-        authorId: "ksa",
+        authorEmail: "joe.shohet@gmail.com",
         title: "Prisma Day 2020",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -29,7 +29,7 @@ async function main() {
         tags: ["hello", "world"],
       }, // Populates authorId with user's id
       {
-        authorId: "ksa",
+        authorEmail: "test@test.com",
         title: "How to write a Prisma schema",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),

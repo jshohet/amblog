@@ -3,6 +3,7 @@
 import {createContext, useContext} from 'react';
 import { IPostsProps, Post} from '../types/PostType'
 import { IIdProps } from '../types/IdTypes';
+import { IEditorProps } from '../types/EditorStateType';
 
 export const PostContext = createContext<IPostsProps>({
     posts: [],
@@ -13,7 +14,7 @@ export const SelectedPostContext = createContext<IIdProps>({
   selectedPost: {
       id: 0,
       createdAt: new Date(),
-      authorId: '',
+      authorEmail: '',
       title: '',
       text: [],
       mood: '',
@@ -21,3 +22,8 @@ export const SelectedPostContext = createContext<IIdProps>({
   },
   setSelectedPost: () => {},
 });
+
+export const EditorContext = createContext<IEditorProps>({
+  openEditor: false,
+  setOpenEditor: () => {}
+ })

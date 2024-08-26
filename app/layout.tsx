@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import {  Libre_Baskerville} from "next/font/google";
+import { Libre_Baskerville } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./providers/authProvider";
 import PostProvider from "./providers/postProvider";
 import SelectedPostProvider from "./providers/selectedPostProvider";
 import Header from "./components/header/Header";
-
+import EditorStateProvider from "./providers/editorStateProvider";
 
 const libreBaskerville = Libre_Baskerville({
   weight: ["400", "700"],
@@ -27,10 +27,12 @@ export default function RootLayout({
       <body className={libreBaskerville.className}>
         <AuthProvider>
           <PostProvider>
-            <SelectedPostProvider>
-              <Header />
-              {children}
-            </SelectedPostProvider>
+            <EditorStateProvider>
+              <SelectedPostProvider>
+                <Header />
+                {children}
+              </SelectedPostProvider>
+            </EditorStateProvider>
           </PostProvider>
         </AuthProvider>
       </body>

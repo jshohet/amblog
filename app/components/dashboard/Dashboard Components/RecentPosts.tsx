@@ -15,12 +15,13 @@ const RecentPost = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { selectedPost, setSelectedPost } = useSelectedPostContext();
 
+  const client = axios.create({baseURL: "/api/posts"})
+
   //load all posts for logged in user
   useEffect(() => {
     const postsByUser = async () => {
       setIsLoading(true);
-      await axios
-        .get("/api/posts")
+      client.get("")
         .then((response) => {
           setPosts(response.data);
           setIsLoading(false);
@@ -29,6 +30,35 @@ const RecentPost = () => {
     };
     postsByUser();
   }, []);
+
+  const handleDisplayAllClick = () => {
+    setSelectedPost({
+      ...selectedPost,
+      id: 0,
+    });
+  };
+
+  const handlePostDelete = async(id: Number) => {
+    if (posts) {
+      await client.delete(`/${id}`)
+        // .then((response) => {
+        //   console.log(`Deleted post with ID ${id}`);
+        // })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+
+      setPosts(
+        posts.filter((post) => {
+          return post.id !== id;
+        })
+      );
+      setSelectedPost({
+        ...selectedPost,
+        id: 0,
+      });
+  }
 
   //pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -53,7 +83,7 @@ const RecentPost = () => {
             </div>
             <div className="flex gap-2">
               <FaEdit size={25} />
-              <FaTrashAlt size={25} />
+              <FaTrashAlt size={25} className="cursor-pointer" onClick={(e:any) => handlePostDelete(post.id)} />
             </div>
           </div>
           <div className="  p-4">
@@ -110,12 +140,19 @@ const RecentPost = () => {
         </div>
       ) : (
         <div>
-          <h2 className="text-xl mb-10 font-semibold text-five">
-            {selectedPost.title}
-          </h2>
+          <div className="flex justify-between">
+            <h2 className="text-xl mb-4 font-semibold text-five">
+              {selectedPost.title}
+            </h2>
+            <h2
+              onClick={handleDisplayAllClick}
+              className="select-none mb-4 hover:underline p-1 m-0.5 font-semibold hover:bg-three hover:text-one cursor-pointer rounded-lg">
+              Display All
+            </h2>
+          </div>
           <div
             key={selectedPost.id}
-            className="w-[800px] mb-4 rounded-b-lg bg-[#D9D9D9] shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)]">
+            className="w-[700px] mb-4 rounded-b-lg bg-[#D9D9D9] shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)]">
             <div className="bg-three flex justify-between rounded-t-lg p-4 text-white ">
               <div>
                 <div className="flex items-center gap-2">
@@ -127,7 +164,11 @@ const RecentPost = () => {
               </div>
               <div className="flex gap-2">
                 <FaEdit size={25} />
-                <FaTrashAlt size={25} />
+                <FaTrashAlt
+                  size={25}
+                  className="cursor-pointer"
+                  onClick={(e: any) => handlePostDelete(selectedPost.id)}
+                />
               </div>
             </div>
             <div className="  p-4">
