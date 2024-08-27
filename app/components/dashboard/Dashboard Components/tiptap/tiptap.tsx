@@ -19,7 +19,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import Underline from "@tiptap/extension-underline";
 import Typography from "@tiptap/extension-typography";
 import ImageResize from "tiptap-extension-resize-image";
-import { MutableRefObject, useRef, useState } from "react";
+import React, { MutableRefObject, useRef, useState } from "react";
 import { HexColorPicker } from "react-colorful";
 import TextStyle from "@tiptap/extension-text-style";
 import Image from "@tiptap/extension-image";
@@ -62,9 +62,11 @@ const Tiptap = () => {
     injectCSS: false,
   });
   const [color, setColor] = useState("#aabbcc");
-  const [selectedImage, setSelectedImage] = useState<Blob | MediaSource>(
+  const [selectedImage, setSelectedImage] = useState<Blob>(
     new Blob()
   );
+  const [base64Image, setBase64Image] = useState<string>()
+  const [title, setTitle] = useState<string>();
   const [customDate, selectCustomDate] = useState<Date>(new Date());
   const [emoji, setEmoji] = useState<EmojiClickData>();
   const [tags, setTags] = useState<string[]>([]);
@@ -80,12 +82,25 @@ const Tiptap = () => {
       setColor(color);
     }
   };
-  const handleSetImage = (): any => {
+
+  function blobToDataURL(blob: Blob): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (_e) => resolve(reader.result as string);
+      reader.onerror = (_e) => reject(reader.error);
+      reader.onabort = (_e) => reject(new Error("Read aborted"));
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  const handleSetImage = async() => {   
+    const imageBase64 = await blobToDataURL(selectedImage);
+    console.log(imageBase64);
     if (editor) {
       editor
         .chain()
         .focus()
-        .setImage({ src: URL.createObjectURL(selectedImage) })
+        .setImage({ src: imageBase64 })
         .run();
       editor.commands.createParagraphNear();
       editor.commands.setTextSelection(editor.state.selection.to);
@@ -265,6 +280,31 @@ const Tiptap = () => {
     );
   };
 
+  const CreateTitle = () => {
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      setTitle(e.target.value);
+    };
+
+    return (
+      <div className="ml-2 mb-2 p-1 rounded-[3px] w-[250px] flex items-center flex-wrap gap-1">
+        <h2 className="text-lg">
+          Title this post:
+        </h2>
+        <input
+          value={title}
+          id="title"
+          type="text"
+          name="title"
+          key="title"
+          onChange={handleTitleChange}
+          placeholder="Add a title"
+          className="flex-grow mb-1 p-1 text-lg focus:bg-white bg-one border-2 border-three outline-none rounded-lg placeholder-two placeholder-opacity-95"
+        />
+      </div>
+    );
+  };
+
   const PickCustomDate = () => {
     return (
       <div className="mb-4 mt-1 ml-4">
@@ -315,8 +355,6 @@ const Tiptap = () => {
   };
 
   const TagsInput = () => {
-    const inputRef = useRef<HTMLInputElement>(null);
-
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key !== "Enter") return;
 
@@ -327,10 +365,6 @@ const Tiptap = () => {
       setTags([...tags, target.value]);
 
       target.value = "";
-
-      if (inputRef.current !== null) {
-        inputRef.current.focus();
-      }
     };
 
     function removeTag(index: number) {
@@ -340,7 +374,6 @@ const Tiptap = () => {
     return (
       <div className="ml-2 mb-2 p-1 rounded-[3px] w-[250px] flex items-center flex-wrap gap-1">
         <input
-          ref={inputRef}
           onKeyUp={handleKeyDown}
           name="tagsInput"
           type="text"
@@ -369,10 +402,12 @@ const Tiptap = () => {
       await client
         .post("", {
           authorEmail: session.user.email,
-          title: "",
-          mood: "",
-          text: "",
-          tags: [],
+          title: title,
+          mood: emoji
+            ? emoji.imageUrl
+            : "https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f602.png",
+          text: editor?.getHTML(),
+          tags: tags,
         })
         .then((response) => {
           setSelectedPost({
@@ -389,6 +424,7 @@ const Tiptap = () => {
 
   return (
     <div className="flex flex-col items-center">
+      <h2 className="w-full text-xl font-semibold ml-3 mb-2">{title}</h2>
       <Menu />
       <div className="flex">
         <EditorContent editor={editor} />
@@ -397,6 +433,7 @@ const Tiptap = () => {
           <h2 className="text-xl font-semibold ml-2 mt-1 mb-2">
             Entry Information:
           </h2>
+          {CreateTitle()}
           <TagsInput />
           <PickCustomDate />
           <PickEmoji />

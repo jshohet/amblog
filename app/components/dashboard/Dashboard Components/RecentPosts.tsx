@@ -15,13 +15,14 @@ const RecentPost = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { selectedPost, setSelectedPost } = useSelectedPostContext();
 
-  const client = axios.create({baseURL: "/api/posts"})
+  const client = axios.create({ baseURL: "/api/posts" });
 
   //load all posts for logged in user
   useEffect(() => {
     const postsByUser = async () => {
       setIsLoading(true);
-      client.get("")
+      client
+        .get("")
         .then((response) => {
           setPosts(response.data);
           setIsLoading(false);
@@ -38,9 +39,10 @@ const RecentPost = () => {
     });
   };
 
-  const handlePostDelete = async(id: Number) => {
+  const handlePostDelete = async (id: Number) => {
     if (posts) {
-      await client.delete(`/${id}`)
+      await client
+        .delete(`/${id}`)
         // .then((response) => {
         //   console.log(`Deleted post with ID ${id}`);
         // })
@@ -49,16 +51,16 @@ const RecentPost = () => {
         });
     }
 
-      setPosts(
-        posts.filter((post) => {
-          return post.id !== id;
-        })
-      );
-      setSelectedPost({
-        ...selectedPost,
-        id: 0,
-      });
-  }
+    setPosts(
+      posts.filter((post) => {
+        return post.id !== id;
+      })
+    );
+    setSelectedPost({
+      ...selectedPost,
+      id: 0,
+    });
+  };
 
   //pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -77,17 +79,30 @@ const RecentPost = () => {
             <div>
               <h2 className="font-bold text-xl"> {post.title}</h2>
               <div className="flex items-center gap-2">
-                <p className="text-[20px]">{convertMoodToEmoji(post.mood)}</p>
+                <img
+                  src={post.mood}
+                  alt="emoji"
+                  width={40}
+                  height={40}
+                  referrerPolicy="no-referrer"
+                />
                 <p>{new Date(post.createdAt).toDateString()}</p>
               </div>
             </div>
             <div className="flex gap-2">
               <FaEdit size={25} />
-              <FaTrashAlt size={25} className="cursor-pointer" onClick={(e:any) => handlePostDelete(post.id)} />
+              <FaTrashAlt
+                size={25}
+                className="cursor-pointer"
+                onClick={(e: any) => handlePostDelete(post.id)}
+              />
             </div>
           </div>
           <div className="  p-4">
-            <p>{JSON.stringify(post.text)}</p>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify(post.text).slice(1,-1),
+              }}></div>
             <div className="flex gap-2">
               <FaTags size={25} className="rotate-90 text-four" />
               {post.tags.map((tag, i) => (
