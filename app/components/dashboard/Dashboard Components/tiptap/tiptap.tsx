@@ -62,16 +62,14 @@ const Tiptap = () => {
     injectCSS: false,
   });
   const [color, setColor] = useState("#aabbcc");
-  const [selectedImage, setSelectedImage] = useState<Blob>(
-    new Blob()
-  );
-  const [base64Image, setBase64Image] = useState<string>()
+  const [selectedImage, setSelectedImage] = useState<Blob>(new Blob());
   const [title, setTitle] = useState<string>();
   const [customDate, selectCustomDate] = useState<Date>(new Date());
   const [emoji, setEmoji] = useState<EmojiClickData>();
   const [tags, setTags] = useState<string[]>([]);
   const { selectedPost, setSelectedPost } = useSelectedPostContext();
   const { openEditor, setOpenEditor } = useEditorContext();
+  const [imageUrls, setImageUrls] = useState<Blob[]>([]);
 
   const client = axios.create({ baseURL: "/api/posts" });
   const { data: session } = useSession();
@@ -93,15 +91,10 @@ const Tiptap = () => {
     });
   }
 
-  const handleSetImage = async() => {   
+  const handleSetImageFromBlob = async () => {
     const imageBase64 = await blobToDataURL(selectedImage);
-    console.log(imageBase64);
     if (editor) {
-      editor
-        .chain()
-        .focus()
-        .setImage({ src: imageBase64 })
-        .run();
+      editor.chain().focus().setImage({ src: imageBase64 }).run();
       editor.commands.createParagraphNear();
       editor.commands.setTextSelection(editor.state.selection.to);
       setSelectedImage(new Blob());
@@ -216,43 +209,6 @@ const Tiptap = () => {
                 <FaAlignRight size={30} />
               </button>
             </div>
-            <div className="flex items-center justify-center gap-2">
-              <label
-                htmlFor="image_upload"
-                className="hover:underline text-lg p-1 m-0.5 hover:bg-three hover:text-one rounded-lg whitespace-nowrap">
-                Upload Image
-              </label>
-              <input
-                type="file"
-                name="myImage"
-                id="image_upload"
-                className="hidden"
-                // Event handler to capture file selection and update the state
-                onChange={(event) => {
-                  //@ts-ignore
-                  setSelectedImage(event.target.files[0]); //Update the state with the selected image
-                }}
-              />
-              <p className="text-xl font-bold">|</p>
-              <button
-                className="hover:underline text-lg p-1 m-0.5 hover:bg-three hover:text-one rounded-lg whitespace-nowrap"
-                onClick={() => handleSetImage()}>
-                Set image
-              </button>
-              <p>
-                {/*@ts-ignore */}
-                {selectedImage.name && "Selected file:"} {/*@ts-ignore */}
-                {selectedImage.name ? (
-                  //@ts-ignore
-                  <span>{selectedImage.name}</span>
-                ) : (
-                  <span>
-                    {/*@ts-ignore */}
-                    {selectedImage.name && "None"}
-                  </span>
-                )}
-              </p>
-            </div>
           </div>
         )}
       </div>
@@ -288,9 +244,7 @@ const Tiptap = () => {
 
     return (
       <div className="ml-2 mb-2 p-1 rounded-[3px] w-[250px] flex items-center flex-wrap gap-1">
-        <h2 className="text-lg">
-          Title this post:
-        </h2>
+        <h2 className="text-lg">Title this post:</h2>
         <input
           value={title}
           id="title"
@@ -397,6 +351,66 @@ const Tiptap = () => {
     );
   };
 
+  const UploadAndDisplayImages = () => {
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (!e.target.files) return;
+      const files = Array.from(e.target.files);
+      setImageUrls([...imageUrls, ...files]);
+    };
+
+    function removeImage(index: number) {
+      setImageUrls(imageUrls.filter((el, i) => i !== index));
+    }
+
+    const DisplayImagesFromFile = imageUrls.map((url, idx) => (
+      <div
+        key={idx}
+        className=" py-1 px-2 rounded-2xl ml-1 whitespace-break-spaces break-all ">
+        <div className="w-full flex justify-end">
+          <label
+            className="h-[20px] w-[20px] absolute z-30 hover:scale-110 ease-in duration-300 bg-[rgb(48,48,48)] text-[#fff] rounded-[50%] inline-flex justify-center items-center ml-1 text-[18px] cursor-pointer"
+            onClick={() => removeImage(idx)}
+            htmlFor="image">
+            &times;
+          </label>
+        </div>
+        <img
+          src={URL.createObjectURL(url)}
+          id="image"
+          width={200}
+          height={100}
+          alt="image"
+          className="relative"
+        />
+      </div>
+    ));
+
+    return (
+      <div className="ml-2 mt-2">
+        <form method="post" encType="multipart/form-data">
+          <div>
+            <label
+              htmlFor="file"
+              className="hover:underline cursor-pointer text-lg p-1 m-0.5 hover:bg-three hover:text-one rounded-lg whitespace-nowrap">
+              Upload Images
+            </label>
+            <input
+              type="file"
+              id="file"
+              name="file"
+              className="hidden"
+              multiple
+              onChange={handleImageUpload}
+            />
+          </div>
+          <div className="flex flex-row w-full flex-wrap">
+            {DisplayImagesFromFile}
+          </div>
+        </form>
+      </div>
+    );
+  };
+
   const handlePostCreate = async () => {
     if (session && session.user) {
       await client
@@ -439,6 +453,7 @@ const Tiptap = () => {
           <PickEmoji />
         </div>
       </div>
+      <UploadAndDisplayImages />
       <div
         onClick={handlePostCreate}
         className="shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)] bg-darkerTwo select-none mb-10 hover:underline p-1 m-0.5 text-2xl font-semibold hover:bg-three hover:text-one cursor-pointer rounded-lg">
