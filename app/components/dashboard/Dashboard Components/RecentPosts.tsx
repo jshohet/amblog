@@ -187,7 +187,10 @@ const RecentPost = () => {
               </div>
             </div>
             <div className="  p-4">
-              <p>{JSON.stringify(selectedPost.text)}</p>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: JSON.stringify(selectedPost.text).slice(1, -1),
+                }}></div>
               <div className="flex gap-2">
                 <FaTags size={25} className="rotate-90 text-four" />
                 {selectedPost.tags.map((tag, i) => (

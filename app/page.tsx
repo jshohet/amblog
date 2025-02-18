@@ -6,6 +6,8 @@ import Dashboard from "./components/dashboard/Dashboard";
 export default async function Home() {
   const session = await getServerSession(authOptions);
 
+
+
   return (
     <main>      
       {session ? <Dashboard /> : <WelcomePage />}

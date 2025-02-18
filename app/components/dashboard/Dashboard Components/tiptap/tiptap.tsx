@@ -386,7 +386,7 @@ const Tiptap = () => {
     ));
 
     return (
-      <div className="ml-2 mt-2">
+      <div className="ml-2 my-2">
         <form method="post" encType="multipart/form-data">
           <div>
             <label
@@ -411,17 +411,17 @@ const Tiptap = () => {
     );
   };
 
-  const handlePostCreate = async () => {
+  const handlePostCreate = async () => {    
     if (session && session.user) {
       await client
         .post("", {
           authorEmail: session.user.email,
-          title: title,
+          title: title ? title : "New post",
           mood: emoji
             ? emoji.imageUrl
             : "https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f602.png",
           text: editor?.getHTML(),
-          tags: tags,
+          tags: tags.length > 0 ? tags : ["notags"],
         })
         .then((response) => {
           setSelectedPost({
