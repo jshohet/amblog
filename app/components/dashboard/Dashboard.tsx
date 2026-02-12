@@ -16,7 +16,7 @@ const Dashboard = async () => {
   return (
     <div className="w-full">
       <Socials />
-      <div className="px-[300px]">
+      <div className="px-75">
         <Welcome />
         <TiptapHandler />
         

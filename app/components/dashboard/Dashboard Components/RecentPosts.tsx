@@ -74,7 +74,7 @@ const RecentPost = () => {
     ? records.map((post: Post) => (
         <div
           key={post.id}
-          className="w-[600px] mb-4 rounded-b-lg bg-[#D9D9D9] shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)]">
+          className="w-150 mb-4 rounded-b-lg bg-[#D9D9D9] shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)]">
           <div className="bg-three flex justify-between rounded-t-lg p-4 text-white ">
             <div>
               <h2 className="font-bold text-xl"> {post.title}</h2>
@@ -167,7 +167,7 @@ const RecentPost = () => {
           </div>
           <div
             key={selectedPost.id}
-            className="w-[700px] mb-4 rounded-b-lg bg-[#D9D9D9] shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)]">
+            className="w-175 mb-4 rounded-b-lg bg-[#D9D9D9] shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)]">
             <div className="bg-three flex justify-between rounded-t-lg p-4 text-white ">
               <div>
                 <div className="flex items-center gap-2">

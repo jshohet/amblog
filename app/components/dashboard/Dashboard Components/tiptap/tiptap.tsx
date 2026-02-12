@@ -64,7 +64,7 @@ const Tiptap = () => {
   });
   const [color, setColor] = useState("#aabbcc");
   const [selectedImage, setSelectedImage] = useState<Blob>(new Blob());
-  const [title, setTitle] = useState<string>();
+  const [title, setTitle] = useState<string>("");
   const [customDate, selectCustomDate] = useState<Date>(new Date());
   const [emoji, setEmoji] = useState<EmojiClickData>();
   const [tags, setTags] = useState<string[]>([]);

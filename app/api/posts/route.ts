@@ -48,19 +48,30 @@ export async function GET(_request: NextRequest) {
 //create new post for session user
 export async function POST(req: NextRequest) {
   const prisma = getPrisma();
-  const { authorEmail, title, text, mood, tags, images } = await req.json();
+  const token = await getServerSession(authOptions);
+  if (!token?.user?.email) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-  const newPost: Post = await prisma.post.create({
-    data: {
-      authorEmail: authorEmail,
-      title: title,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      text: text,
-      mood: mood,
-      tags: tags,
-      images: images ?? [],
-    },
-  });
-  return NextResponse.json({ newPost });
+  try {
+    const { title, text, mood, tags, images } = await req.json();
+
+    const newPost: Post = await prisma.post.create({
+      data: {
+        authorEmail: token.user.email,
+        title: title,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        text: text,
+        mood: mood,
+        tags: tags,
+        images: images ?? [],
+      },
+    });
+
+    return NextResponse.json({ newPost });
+  } catch (error) {
+    console.error("POST /api/posts failed", error);
+    return NextResponse.json({ error: "Failed to create post" }, { status: 500 });
+  }
 }

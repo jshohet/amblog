@@ -16,7 +16,8 @@ export default function SelectedPostProvider({
       title: '',
       text: null,
       mood: '',
-      tags: []
+      tags: [],
+      images: []
     }
   const [selectedPost, setSelectedPost] = useState<Post>(initialPost);
 

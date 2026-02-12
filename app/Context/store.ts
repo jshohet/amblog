@@ -18,7 +18,8 @@ export const SelectedPostContext = createContext<IIdProps>({
       title: '',
       text: [],
       mood: '',
-      tags: []
+      tags: [],
+      images: []
   },
   setSelectedPost: () => {},
 });
