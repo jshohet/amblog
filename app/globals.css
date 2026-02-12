@@ -1,6 +1,17 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@source "./app/**/*.{js,ts,jsx,tsx,mdx}";
+@source "./components/**/*.{js,ts,jsx,tsx,mdx}";
+@source "./pages/**/*.{js,ts,jsx,tsx,mdx}";
+
+@theme {
+  --color-one: #d1d0cc;
+  --color-two: #a38994;
+  --color-three: #5f2b4f;
+  --color-four: #604a4d;
+  --color-five: #1d0c1c;
+  --color-darkerTwo: #85566a;
+}
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -24,4 +35,3 @@ light #d1d0cc
       #604a4d
 dark  #1d0c1c
 */
-

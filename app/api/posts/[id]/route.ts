@@ -37,7 +37,7 @@ export async function DELETE(req: NextRequest) {
 // Action to update or edit
 export const PUT = async (req: NextRequest) => {
   const prisma = getPrisma();
-  const { title, text, id, mood, tags, author } = await req.json();
+  const { title, text, id, mood, tags, images } = await req.json();
 
   const post = await prisma.post.update({
     where: {
@@ -48,6 +48,7 @@ export const PUT = async (req: NextRequest) => {
       text,
       mood,
       tags,
+      images,
     },
   });
 

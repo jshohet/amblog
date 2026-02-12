@@ -48,7 +48,7 @@ export async function GET(_request: NextRequest) {
 //create new post for session user
 export async function POST(req: NextRequest) {
   const prisma = getPrisma();
-  const { authorEmail, title, text, mood, tags } = await req.json();
+  const { authorEmail, title, text, mood, tags, images } = await req.json();
 
   const newPost: Post = await prisma.post.create({
     data: {
@@ -59,6 +59,7 @@ export async function POST(req: NextRequest) {
       text: text,
       mood: mood,
       tags: tags,
+      images: images ?? [],
     },
   });
   return NextResponse.json({ newPost });

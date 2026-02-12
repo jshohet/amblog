@@ -19,7 +19,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import Underline from "@tiptap/extension-underline";
 import Typography from "@tiptap/extension-typography";
 import ImageResize from "tiptap-extension-resize-image";
-import React, { MutableRefObject, useRef, useState } from "react";
+import React, { useState } from "react";
 import { HexColorPicker } from "react-colorful";
 import { TextStyle } from "@tiptap/extension-text-style";
 import Image from "@tiptap/extension-image";
@@ -55,11 +55,12 @@ const Tiptap = () => {
     editorProps: {
       attributes: {
         class:
-          "prose [&_ol]:list-decimal [&_ul]:list-disc min-h-[800px] h-auto min-w-[800px] w-auto max-w-[1200px] mb-10 rounded-md border-2 p-2 border-five bg-white/50",
+          "prose [&_ol]:list-decimal [&_ul]:list-disc min-h-200 h-auto min-w-200 w-auto max-w-300 mb-10 rounded-md border-2 p-2 border-five bg-white/50",
       },
     },
     autofocus: true,
     injectCSS: false,
+    immediatelyRender: false,
   });
   const [color, setColor] = useState("#aabbcc");
   const [selectedImage, setSelectedImage] = useState<Blob>(new Blob());
@@ -69,7 +70,7 @@ const Tiptap = () => {
   const [tags, setTags] = useState<string[]>([]);
   const { selectedPost, setSelectedPost } = useSelectedPostContext();
   const { openEditor, setOpenEditor } = useEditorContext();
-  const [imageUrls, setImageUrls] = useState<Blob[]>([]);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
 
   const client = axios.create({ baseURL: "/api/posts" });
   const { data: session } = useSession();
@@ -106,7 +107,7 @@ const Tiptap = () => {
       <div className="w-full">
         {editor && (
           <div className="mb-2 flex flex-row items-center justify-start w-full gap-2">
-            <div className="">
+            <div>
               <button
                 onClick={() => editor.chain().focus().toggleBold().run()}
                 className={`border-2 border-five p-1 m-0.5 hover:bg-three rounded-lg ${
@@ -151,7 +152,7 @@ const Tiptap = () => {
                     ? "bg-three text-one"
                     : ""
                 }`}>
-                <LuHeading1 size={30} className="" />
+                <LuHeading1 size={30} />
               </button>
               <button
                 onClick={() =>
@@ -162,7 +163,7 @@ const Tiptap = () => {
                     ? "bg-three text-one"
                     : ""
                 }`}>
-                <LuHeading2 size={30} className="" />
+                <LuHeading2 size={30} />
               </button>
               <button
                 onClick={() =>
@@ -173,7 +174,7 @@ const Tiptap = () => {
                     ? "bg-three text-one"
                     : ""
                 }`}>
-                <LuHeading3 size={30} className="" />
+                <LuHeading3 size={30} />
               </button>
               <button
                 onClick={() =>
@@ -222,7 +223,7 @@ const Tiptap = () => {
       <div className="ml-2">
         <button
           onClick={() => setColorOpen(!colorOpen)}
-          className=" text-five hover:underline text-lg ml-[5px] w-[150px] whitespace-nowrap h-auto rounded-lg mb-2 p-1 hover:bg-three hover:text-one">
+          className="text-five hover:underline text-lg ml-1.25 w-37.5 whitespace-nowrap h-auto rounded-lg mb-2 p-1 hover:bg-three hover:text-one">
           {colorOpen ? "Hide" : "Show"} Colors
         </button>
         {colorOpen && (
@@ -243,7 +244,7 @@ const Tiptap = () => {
     };
 
     return (
-      <div className="ml-2 mb-2 p-1 rounded-[3px] w-[250px] flex items-center flex-wrap gap-1">
+      <div className="ml-2 mb-2 p-1 rounded-[3px] w-62.5 flex items-center flex-wrap gap-1">
         <h2 className="text-lg">Title this post:</h2>
         <input
           value={title}
@@ -253,7 +254,7 @@ const Tiptap = () => {
           key="title"
           onChange={handleTitleChange}
           placeholder="Add a title"
-          className="flex-grow mb-1 p-1 text-lg focus:bg-white bg-one border-2 border-three outline-none rounded-lg placeholder-two placeholder-opacity-95"
+          className="grow mb-1 p-1 text-lg focus:bg-white bg-one border-2 border-three outline-none rounded-lg placeholder-two placeholder-opacity-95"
         />
       </div>
     );
@@ -264,7 +265,7 @@ const Tiptap = () => {
       <div className="mb-4 mt-1 ml-4">
         <h2 className="mb-2 text-lg">Date of events:</h2>
         <DatePicker
-          className="rounded-lg text-lg w-32 hover:underline focus:underline focus:bg-three focus:text-one hover:bg-three hover:text-one  text-five bg-one cursor-pointer p-2"
+          className="rounded-lg text-lg w-32 hover:underline focus:underline focus:bg-three focus:text-one hover:bg-three hover:text-one text-five bg-one cursor-pointer p-2"
           selected={customDate}
           onChange={(date: Date) => selectCustomDate(new Date(date))}
         />
@@ -276,7 +277,7 @@ const Tiptap = () => {
     const [pickerOpen, setPickerOpen] = useState(false);
 
     return (
-      <div className="ml-4 w-[300px]">
+      <div className="ml-4 w-75">
         <h2 className="mb-2 text-lg">How are you feeling?</h2>
         <div
           className="flex items-center gap-1 cursor-pointer ml-2"
@@ -326,22 +327,22 @@ const Tiptap = () => {
     }
 
     return (
-      <div className="ml-2 mb-2 p-1 rounded-[3px] w-[250px] flex items-center flex-wrap gap-1">
+      <div className="ml-2 mb-2 p-1 rounded-[3px] w-62.5 flex items-center flex-wrap gap-1">
         <input
           onKeyUp={handleKeyDown}
           name="tagsInput"
           type="text"
           id=""
-          className="flex-grow mb-1 p-1 text-lg focus:bg-white bg-one border-2 border-three outline-none rounded-lg placeholder-two placeholder-opacity-95"
+          className="grow mb-1 p-1 text-lg focus:bg-white bg-one border-2 border-three outline-none rounded-lg placeholder-two placeholder-opacity-95"
           placeholder="Add a tag..."
         />
         {tags.map((tag, index) => (
           <div
-            className=" py-1 px-2 rounded-2xl ml-1 whitespace-break-spaces break-all bg-two"
+            className="py-1 px-2 rounded-2xl ml-1 whitespace-break-spaces break-all bg-two"
             key={index}>
-            <span className="">{tag}</span>
+            <span>{tag}</span>
             <span
-              className="h-[20px] w-[20px] bg-[rgb(48,48,48)] text-[#fff] rounded-[50%] inline-flex justify-center items-center ml-1 text-[18px] cursor-pointer"
+              className="h-5 w-5 bg-[rgb(48,48,48)] text-white rounded-[50%] inline-flex justify-center items-center ml-1 text-[18px] cursor-pointer"
               onClick={() => removeTag(index)}>
               &times;
             </span>
@@ -355,27 +356,27 @@ const Tiptap = () => {
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (!e.target.files) return;
       const files = Array.from(e.target.files);
-      setImageUrls([...imageUrls, ...files]);
+      setImageFiles((prev) => [...prev, ...files]);
     };
 
     function removeImage(index: number) {
-      setImageUrls(imageUrls.filter((el, i) => i !== index));
+      setImageFiles((prev) => prev.filter((_, i) => i !== index));
     }
 
-    const DisplayImagesFromFile = imageUrls.map((url, idx) => (
+    const DisplayImagesFromFile = imageFiles.map((file, idx) => (
       <div
         key={idx}
-        className=" py-1 px-2 rounded-2xl ml-1 whitespace-break-spaces break-all ">
+        className="py-1 px-2 rounded-2xl ml-1 whitespace-break-spaces break-all">
         <div className="w-full flex justify-end">
           <label
-            className="h-[20px] w-[20px] absolute z-30 hover:scale-110 ease-in duration-300 bg-[rgb(48,48,48)] text-[#fff] rounded-[50%] inline-flex justify-center items-center ml-1 text-[18px] cursor-pointer"
+            className="h-5 w-5 absolute z-30 hover:scale-110 ease-in duration-300 bg-[rgb(48,48,48)] text-white rounded-[50%] inline-flex justify-center items-center ml-1 text-[18px] cursor-pointer"
             onClick={() => removeImage(idx)}
             htmlFor="image">
             &times;
           </label>
         </div>
         <img
-          src={URL.createObjectURL(url)}
+          src={URL.createObjectURL(file)}
           id="image"
           width={200}
           height={100}
@@ -411,10 +412,31 @@ const Tiptap = () => {
     );
   };
 
+  const uploadImages = async () => {
+    if (imageFiles.length === 0) return [] as string[];
+
+    const formData = new FormData();
+    imageFiles.forEach((file) => formData.append("files", file));
+
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("Image upload failed");
+    }
+
+    const data = (await response.json()) as { urls?: string[] };
+    return data.urls ?? [];
+  };
+
   const handlePostCreate = async () => {
     if (session && session.user) {
-      await client
-        .post("", {
+      try {
+        const imageUrls = await uploadImages();
+
+        await client.post("", {
           authorEmail: session.user.email,
           title: title ? title : "New post",
           mood: emoji
@@ -422,17 +444,18 @@ const Tiptap = () => {
             : "https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f602.png",
           text: editor?.getHTML(),
           tags: tags.length > 0 ? tags : ["notags"],
-        })
-        .then((response) => {
-          setSelectedPost({
-            ...selectedPost,
-            id: 0,
-          });
+          images: imageUrls,
+        });
 
-          setOpenEditor(false);
-          // console.log(response);
-        })
-        .catch((error) => console.error(error));
+        setSelectedPost({
+          ...selectedPost,
+          id: 0,
+        });
+
+        setOpenEditor(false);
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
