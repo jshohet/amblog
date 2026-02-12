@@ -35,6 +35,17 @@ export async function POST(req: NextRequest) {
   try {
     const prisma = getPrisma();
     const { title, text, mood, tags, images } = await req.json();
+    await prisma.user.upsert({
+      where: {
+        email: token.user.email,
+      },
+      update: {},
+      create: {
+        email: token.user.email,
+        name: token.user.name ?? null,
+        externalID: token.user.email,
+      },
+    });
 
     const newPost: Post = await prisma.post.create({
       data: {
