@@ -411,7 +411,7 @@ const Tiptap = () => {
     );
   };
 
-  const handlePostCreate = async () => {    
+  const handlePostCreate = async () => {
     if (session && session.user) {
       await client
         .post("", {

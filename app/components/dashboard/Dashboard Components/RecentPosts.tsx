@@ -54,7 +54,7 @@ const RecentPost = () => {
     setPosts(
       posts.filter((post) => {
         return post.id !== id;
-      })
+      }),
     );
     setSelectedPost({
       ...selectedPost,
@@ -101,7 +101,7 @@ const RecentPost = () => {
           <div className="  p-4">
             <div
               dangerouslySetInnerHTML={{
-                __html: JSON.stringify(post.text).slice(1,-1),
+                __html: JSON.stringify(post.text).slice(1, -1),
               }}></div>
             <div className="flex gap-2">
               <FaTags size={25} className="rotate-90 text-four" />

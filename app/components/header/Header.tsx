@@ -6,7 +6,7 @@ import HomeButton from "./HomeButton";
 import Settings from "./Settings";
 
 const Header = async () => {
-  const session = await getServerSession(authOptions);  
+  const session = await getServerSession(authOptions);
 
   return (
     <div className="flex justify-center items-center py-4 px-2 w-full bg-[#5f2b4f] text-white/70 shadow-lg">

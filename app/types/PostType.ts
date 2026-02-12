@@ -1,4 +1,4 @@
-import { JsonValue } from "@prisma/client/runtime/library"
+import { Prisma } from "@prisma/client"
 import { Dispatch, SetStateAction } from "react"
 
 export type Post={
@@ -7,7 +7,7 @@ export type Post={
     updatedAt?: Date | null,
     authorEmail: string,
     title: string,
-    text: JsonValue | null,
+    text: Prisma.JsonValue | null,
     mood: string,
     tags: string[]
 }
