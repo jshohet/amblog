@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { LoginButton, LogoutButton } from "./auth";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";

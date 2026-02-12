@@ -1,5 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { Post } from "@/app/types/PostType";
 import { authOptions } from "../auth/[...nextauth]/route";
@@ -8,7 +7,7 @@ import { getServerSession } from "next-auth";
 const prisma = new PrismaClient();
 
 //get all posts by user
-export async function GET(res: NextResponse<Post>) {
+export async function GET(_request: NextRequest) {
   const token = await getServerSession(authOptions);
   if (!token) {
     return NextResponse.json([], { status: 403 });
@@ -28,7 +27,7 @@ export async function GET(res: NextResponse<Post>) {
 }
 
 //create new post for session user
-export async function POST(req: NextRequest, res: NextResponse<Post>) {
+export async function POST(req: NextRequest) {
   const { authorEmail, title, text, mood, tags } = await req.json();
 
   const newPost: Post = await prisma.post.create({

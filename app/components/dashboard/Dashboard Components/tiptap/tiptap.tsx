@@ -21,7 +21,7 @@ import Typography from "@tiptap/extension-typography";
 import ImageResize from "tiptap-extension-resize-image";
 import React, { MutableRefObject, useRef, useState } from "react";
 import { HexColorPicker } from "react-colorful";
-import TextStyle from "@tiptap/extension-text-style";
+import { TextStyle } from "@tiptap/extension-text-style";
 import Image from "@tiptap/extension-image";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import DatePicker from "react-datepicker";

@@ -27,7 +27,7 @@ const TiptapHandler = () => {
       localStorage.setItem("imgur info", JSON.stringify(urlState.split('&')))
       window.location.assign("http://localhost:3000/")
     }
-  })
+  }, [])
 
 
   return (

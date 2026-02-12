@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Post } from "@/app/types/PostType";
-import { Pagination, PaginationCursor } from "@nextui-org/pagination";
+import { Pagination } from "@heroui/pagination";
 import { usePostContext } from "@/app/hooks/usePostContext";
 import axios from "axios";
 import { convertMoodToEmoji } from "@/app/utils/moodConversion";
