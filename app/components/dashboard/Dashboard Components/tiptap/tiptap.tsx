@@ -267,7 +267,11 @@ const Tiptap = () => {
         <DatePicker
           className="rounded-lg text-lg w-32 hover:underline focus:underline focus:bg-three focus:text-one hover:bg-three hover:text-one text-five bg-one cursor-pointer p-2"
           selected={customDate}
-          onChange={(date: Date) => selectCustomDate(new Date(date))}
+          onChange={(date: Date | null) => {
+            if (date) {
+              selectCustomDate(date);
+            }
+          }}
         />
       </div>
     );
