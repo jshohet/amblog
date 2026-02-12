@@ -1,32 +1,11 @@
-import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
 import { NextRequest, NextResponse } from "next/server";
 import { Post } from "@/app/types/PostType";
 import { authOptions } from "../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
-
-let prisma: PrismaClient | null = null;
-
-const getPrisma = () => {
-  if (prisma) {
-    return prisma;
-  }
-
-  const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) {
-    throw new Error("DATABASE_URL is not set");
-  }
-
-  prisma = new PrismaClient({
-    adapter: new PrismaPg({ connectionString }),
-  });
-
-  return prisma;
-};
+import prisma from "@/lib/prisma";
 
 //get all posts by user
 export async function GET(_request: NextRequest) {
-  const prisma = getPrisma();
   const token = await getServerSession(authOptions);
   if (!token) {
     return NextResponse.json([], { status: 403 });
@@ -47,7 +26,6 @@ export async function GET(_request: NextRequest) {
 
 //create new post for session user
 export async function POST(req: NextRequest) {
-  const prisma = getPrisma();
   const token = await getServerSession(authOptions);
   if (!token?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -72,6 +50,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ newPost });
   } catch (error) {
     console.error("POST /api/posts failed", error);
-    return NextResponse.json({ error: "Failed to create post" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create post" },
+      { status: 500 },
+    );
   }
 }

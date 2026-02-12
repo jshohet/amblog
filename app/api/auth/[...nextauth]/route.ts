@@ -1,28 +1,9 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import Google from "next-auth/providers/google";
-import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
+import prisma from "@/lib/prisma";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
-let prisma: PrismaClient | null = null;
-
-const getPrisma = () => {
-  if (prisma) {
-    return prisma;
-  }
-
-  const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) {
-    throw new Error("DATABASE_URL is not set");
-  }
-
-  prisma = new PrismaClient({
-    adapter: new PrismaPg({ connectionString }),
-  });
-
-  return prisma;
-};
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -96,7 +77,6 @@ export const authOptions: NextAuthOptions = {
       if (!profile?.email || !profile?.sub) {
         throw new Error("no profile");
       }
-      const prisma = getPrisma();
       await prisma.user.upsert({
         where: {
           email: profile.email,
