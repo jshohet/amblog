@@ -1,6 +1,6 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import Google from "next-auth/providers/google";
-import prisma from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
@@ -77,6 +77,7 @@ export const authOptions: NextAuthOptions = {
       if (!profile?.email || !profile?.sub) {
         throw new Error("no profile");
       }
+      const prisma = getPrisma();
       await prisma.user.upsert({
         where: {
           email: profile.email,

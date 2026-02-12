@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Post } from "@/app/types/PostType";
 import { authOptions } from "../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
-import prisma from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 
 //get all posts by user
 export async function GET(_request: NextRequest) {
@@ -12,6 +12,7 @@ export async function GET(_request: NextRequest) {
   }
 
   if (token) {
+    const prisma = getPrisma();
     const postsByUser = await prisma.post.findMany({
       where: {
         author: { email: token?.user?.email },
@@ -32,6 +33,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const prisma = getPrisma();
     const { title, text, mood, tags, images } = await req.json();
 
     const newPost: Post = await prisma.post.create({
