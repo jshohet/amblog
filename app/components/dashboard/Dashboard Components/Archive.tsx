@@ -113,7 +113,11 @@ const Archive = () => {
               <DatePicker
                 className="mx-10 rounded-sm w-28 text-black p-2"
                 selected={startDate}
-                onChange={(date: Date) => setStartDate(new Date(date))}
+                onChange={(date: Date | null) => {
+                  if (date) {
+                    setStartDate(date);
+                  }
+                }}
               />
             </div>
             <div className="grid grid-cols-[30%_auto]">
@@ -121,7 +125,11 @@ const Archive = () => {
               <DatePicker
                 className="mx-10 rounded-sm w-28 text-black p-2"
                 selected={endDate}
-                onChange={(date: Date) => setEndDate(new Date(date))}
+                onChange={(date: Date | null) => {
+                  if (date) {
+                    setEndDate(date);
+                  }
+                }}
               />
             </div>
             {error && (
