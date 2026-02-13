@@ -501,11 +501,12 @@ const Tiptap = () => {
         const uploadedUrls = await uploadImages();
         const imageUrls = [...existingImages, ...uploadedUrls];
         const removedImages = (selectedPost.images ?? []).filter(
-          (imageUrl) => !existingImages.includes(imageUrl)
+          (imageUrl) => !existingImages.includes(imageUrl),
         );
-        const fallbackMood = selectedPost.id !== 0 && selectedPost.mood
-          ? selectedPost.mood
-          : "https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f602.png";
+        const fallbackMood =
+          selectedPost.id !== 0 && selectedPost.mood
+            ? selectedPost.mood
+            : "https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f602.png";
         const moodUrl = emoji?.imageUrl ?? fallbackMood;
         const payload = {
           title: title ? title : "New post",

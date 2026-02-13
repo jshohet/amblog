@@ -18,7 +18,7 @@ const Archive = () => {
   const [endDate, setEndDate] = useState(new Date());
   const [error, setError] = useState(false);
   const [archiveHeaders, setArchiveHeaders] = useState(
-    getArchiveHeaders(posts)
+    getArchiveHeaders(posts),
   );
   const { selectedPost, setSelectedPost } = useSelectedPostContext();
 
@@ -43,24 +43,24 @@ const Archive = () => {
               new Date(x.createdAt) >= startDate &&
               new Date(x.createdAt) <= new Date(endDate)
             );
-          })
-        )
+          }),
+        ),
       );
     },
-    [startDate, endDate, posts]
+    [startDate, endDate, posts],
   );
 
-  const handleArchivePostClick = (dateId: number) =>{
+  const handleArchivePostClick = (dateId: number) => {
     const index = posts.findIndex((x) => x.id === dateId);
-    setSelectedPost(posts[index])
-  }
+    setSelectedPost(posts[index]);
+  };
 
-  const handleDisplayAllClick = () =>{
+  const handleDisplayAllClick = () => {
     setSelectedPost({
       ...selectedPost,
-      id: 0
+      id: 0,
     });
-  }
+  };
 
   const yearsInPosts = Object.keys(archiveHeaders).map((year, idx) => (
     <Accordion

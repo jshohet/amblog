@@ -15,7 +15,7 @@ const getEnv = (name: string) => {
 const createR2Client = () => {
   const rawAccountId = getEnv("R2_ACCOUNT_ID");
   const accountId = rawAccountId.includes("=")
-    ? rawAccountId.split("=").pop() ?? rawAccountId
+    ? (rawAccountId.split("=").pop() ?? rawAccountId)
     : rawAccountId;
   const accessKeyId = getEnv("R2_ACCESS_KEY_ID");
   const secretAccessKey = getEnv("R2_SECRET_ACCESS_KEY");
@@ -63,9 +63,9 @@ export async function DELETE(req: NextRequest) {
         new DeleteObjectCommand({
           Bucket: bucket,
           Key: key,
-        })
+        }),
       );
-    })
+    }),
   );
 
   await prisma.post.delete({
@@ -79,7 +79,8 @@ export async function DELETE(req: NextRequest) {
 
 // Action to update or edit
 export const PUT = async (req: NextRequest) => {
-  const { title, text, id, mood, tags, images, removedImages } = await req.json();
+  const { title, text, id, mood, tags, images, removedImages } =
+    await req.json();
   const prisma = getPrisma();
   const bucket = getEnv("R2_BUCKET");
   const publicUrl = getEnv("R2_PUBLIC_URL").replace(/\/$/, "");
@@ -100,9 +101,9 @@ export const PUT = async (req: NextRequest) => {
         new DeleteObjectCommand({
           Bucket: bucket,
           Key: key,
-        })
+        }),
       );
-    })
+    }),
   );
 
   const post = await prisma.post.update({
