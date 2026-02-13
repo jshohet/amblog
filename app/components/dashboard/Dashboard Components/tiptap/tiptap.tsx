@@ -19,7 +19,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import Underline from "@tiptap/extension-underline";
 import Typography from "@tiptap/extension-typography";
 import ImageResize from "tiptap-extension-resize-image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HexColorPicker } from "react-colorful";
 import { TextStyle } from "@tiptap/extension-text-style";
 import Image from "@tiptap/extension-image";
@@ -71,9 +71,40 @@ const Tiptap = () => {
   const { selectedPost, setSelectedPost } = useSelectedPostContext();
   const { openEditor, setOpenEditor } = useEditorContext();
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
 
   const client = axios.create({ baseURL: "/api/posts" });
   const { data: session } = useSession();
+
+  useEffect(() => {
+    if (!editor) {
+      return;
+    }
+
+    if (selectedPost.id !== 0) {
+      setTitle(selectedPost.title ?? "");
+      setTags(selectedPost.tags ?? []);
+      setExistingImages(selectedPost.images ?? []);
+      if (selectedPost.createdAt) {
+        selectCustomDate(new Date(selectedPost.createdAt));
+      }
+
+      const existingText =
+        typeof selectedPost.text === "string"
+          ? selectedPost.text
+          : JSON.stringify(selectedPost.text ?? "");
+      editor.commands.setContent(existingText || "");
+      return;
+    }
+
+    setTitle("");
+    setTags([]);
+    setExistingImages([]);
+    setImageFiles([]);
+    setEmoji(undefined);
+    selectCustomDate(new Date());
+    editor.commands.setContent("");
+  }, [editor, selectedPost]);
 
   const handleColorChange = (color: any) => {
     if (editor) {
@@ -367,6 +398,34 @@ const Tiptap = () => {
       setImageFiles((prev) => prev.filter((_, i) => i !== index));
     }
 
+    function removeExistingImage(index: number) {
+      setExistingImages((prev) => prev.filter((_, i) => i !== index));
+    }
+
+    const DisplayExistingImages = existingImages.map((src, idx) => (
+      <div
+        key={`existing-${idx}`}
+        className="py-1 px-2 rounded-2xl ml-1 whitespace-break-spaces break-all">
+        <div className="w-full flex justify-end">
+          <label
+            className="h-5 w-5 absolute z-30 hover:scale-110 ease-in duration-300 bg-[rgb(48,48,48)] text-white rounded-[50%] inline-flex justify-center items-center ml-1 text-[18px] cursor-pointer"
+            onClick={() => removeExistingImage(idx)}
+            htmlFor="image-existing">
+            &times;
+          </label>
+        </div>
+        <img
+          src={src}
+          id="image-existing"
+          width={200}
+          height={100}
+          alt="image"
+          className="relative"
+          referrerPolicy="no-referrer"
+        />
+      </div>
+    ));
+
     const DisplayImagesFromFile = imageFiles.map((file, idx) => (
       <div
         key={idx}
@@ -409,6 +468,7 @@ const Tiptap = () => {
             />
           </div>
           <div className="flex flex-row w-full flex-wrap">
+            {DisplayExistingImages}
             {DisplayImagesFromFile}
           </div>
         </form>
@@ -438,24 +498,40 @@ const Tiptap = () => {
   const handlePostCreate = async () => {
     if (session && session.user) {
       try {
-        const imageUrls = await uploadImages();
-
-        await client.post("", {
-          authorEmail: session.user.email,
+        const uploadedUrls = await uploadImages();
+        const imageUrls = [...existingImages, ...uploadedUrls];
+        const fallbackMood = selectedPost.id !== 0 && selectedPost.mood
+          ? selectedPost.mood
+          : "https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f602.png";
+        const moodUrl = emoji?.imageUrl ?? fallbackMood;
+        const payload = {
           title: title ? title : "New post",
-          mood: emoji
-            ? emoji.imageUrl
-            : "https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f602.png",
+          mood: moodUrl,
           text: editor?.getHTML(),
           tags: tags.length > 0 ? tags : ["notags"],
           images: imageUrls,
-        });
+        };
+
+        if (selectedPost.id !== 0) {
+          await client.put(`/${selectedPost.id}`, {
+            id: selectedPost.id,
+            ...payload,
+          });
+        } else {
+          await client.post("", {
+            authorEmail: session.user.email,
+            ...payload,
+          });
+        }
 
         setSelectedPost({
           ...selectedPost,
           id: 0,
         });
 
+        setImageFiles([]);
+        setExistingImages([]);
+        setEmoji(undefined);
         setOpenEditor(false);
       } catch (error) {
         console.error(error);
@@ -484,7 +560,7 @@ const Tiptap = () => {
       <div
         onClick={handlePostCreate}
         className="shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)] bg-darkerTwo select-none mb-10 hover:underline p-1 m-0.5 text-2xl font-semibold hover:bg-three hover:text-one cursor-pointer rounded-lg">
-        Submit Post
+        {selectedPost.id !== 0 ? "Update Post" : "Submit Post"}
       </div>
     </div>
   );

@@ -8,12 +8,14 @@ import axios from "axios";
 import { convertMoodToEmoji } from "@/app/utils/moodConversion";
 import { FaEdit, FaTrashAlt, FaTags } from "react-icons/fa";
 import { useSelectedPostContext } from "@/app/hooks/useSelectedPostContext";
+import { useEditorContext } from "@/app/hooks/useEditorStateContext";
 
 const RecentPost = () => {
   //global context provider for current user posts
   const { posts, setPosts } = usePostContext();
   const [isLoading, setIsLoading] = useState(false);
   const { selectedPost, setSelectedPost } = useSelectedPostContext();
+  const { setOpenEditor } = useEditorContext();
 
   const client = axios.create({ baseURL: "/api/posts" });
 
@@ -62,6 +64,11 @@ const RecentPost = () => {
     });
   };
 
+  const handlePostEdit = (post: Post) => {
+    setSelectedPost(post);
+    setOpenEditor(true);
+  };
+
   //pagination
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 2;
@@ -90,7 +97,11 @@ const RecentPost = () => {
               </div>
             </div>
             <div className="flex gap-2">
-              <FaEdit size={25} />
+              <FaEdit
+                size={25}
+                className="cursor-pointer"
+                onClick={() => handlePostEdit(post)}
+              />
               <FaTrashAlt
                 size={25}
                 className="cursor-pointer"
@@ -98,11 +109,24 @@ const RecentPost = () => {
               />
             </div>
           </div>
-          <div className="  p-4">
+          <div className="p-4">
             <div
               dangerouslySetInnerHTML={{
                 __html: JSON.stringify(post.text).slice(1, -1),
               }}></div>
+            {post.images?.length > 0 && (
+              <div className="my-3 flex flex-wrap gap-2">
+                {post.images.map((src, index) => (
+                  <img
+                    key={`${post.id}-thumb-${index}`}
+                    src={src}
+                    alt={`${post.title} thumbnail ${index + 1}`}
+                    className="h-16 w-16 rounded-md object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                ))}
+              </div>
+            )}
             <div className="flex gap-2">
               <FaTags size={25} className="rotate-90 text-four" />
               {post.tags.map((tag, i) => (
@@ -178,7 +202,11 @@ const RecentPost = () => {
                 </div>
               </div>
               <div className="flex gap-2">
-                <FaEdit size={25} />
+                <FaEdit
+                  size={25}
+                  className="cursor-pointer"
+                  onClick={() => handlePostEdit(selectedPost)}
+                />
                 <FaTrashAlt
                   size={25}
                   className="cursor-pointer"
@@ -186,11 +214,24 @@ const RecentPost = () => {
                 />
               </div>
             </div>
-            <div className="  p-4">
+            <div className="p-4">
               <div
                 dangerouslySetInnerHTML={{
                   __html: JSON.stringify(selectedPost.text).slice(1, -1),
                 }}></div>
+              {selectedPost.images?.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {selectedPost.images.map((src, index) => (
+                    <img
+                      key={`${selectedPost.id}-thumb-${index}`}
+                      src={src}
+                      alt={`${selectedPost.title} thumbnail ${index + 1}`}
+                      className="h-16 w-16 rounded-md object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  ))}
+                </div>
+              )}
               <div className="flex gap-2">
                 <FaTags size={25} className="rotate-90 text-four" />
                 {selectedPost.tags.map((tag, i) => (
