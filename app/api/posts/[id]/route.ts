@@ -79,8 +79,31 @@ export async function DELETE(req: NextRequest) {
 
 // Action to update or edit
 export const PUT = async (req: NextRequest) => {
-  const { title, text, id, mood, tags, images } = await req.json();
+  const { title, text, id, mood, tags, images, removedImages } = await req.json();
   const prisma = getPrisma();
+  const bucket = getEnv("R2_BUCKET");
+  const publicUrl = getEnv("R2_PUBLIC_URL").replace(/\/$/, "");
+  const client = createR2Client();
+
+  await Promise.all(
+    (removedImages ?? []).map(async (imageUrl: string) => {
+      if (!imageUrl.startsWith(publicUrl)) {
+        return;
+      }
+
+      const key = imageUrl.slice(publicUrl.length + 1);
+      if (!key) {
+        return;
+      }
+
+      await client.send(
+        new DeleteObjectCommand({
+          Bucket: bucket,
+          Key: key,
+        })
+      );
+    })
+  );
 
   const post = await prisma.post.update({
     where: {

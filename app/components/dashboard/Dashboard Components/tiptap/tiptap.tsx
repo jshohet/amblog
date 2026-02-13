@@ -500,6 +500,9 @@ const Tiptap = () => {
       try {
         const uploadedUrls = await uploadImages();
         const imageUrls = [...existingImages, ...uploadedUrls];
+        const removedImages = (selectedPost.images ?? []).filter(
+          (imageUrl) => !existingImages.includes(imageUrl)
+        );
         const fallbackMood = selectedPost.id !== 0 && selectedPost.mood
           ? selectedPost.mood
           : "https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f602.png";
@@ -516,6 +519,7 @@ const Tiptap = () => {
           await client.put(`/${selectedPost.id}`, {
             id: selectedPost.id,
             ...payload,
+            removedImages,
           });
         } else {
           await client.post("", {
