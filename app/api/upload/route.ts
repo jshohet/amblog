@@ -13,7 +13,10 @@ const getEnv = (name: string) => {
 };
 
 const createR2Client = () => {
-  const accountId = getEnv("R2_ACCOUNT_ID");
+  const rawAccountId = getEnv("R2_ACCOUNT_ID");
+  const accountId = rawAccountId.includes("=")
+    ? rawAccountId.split("=").pop() ?? rawAccountId
+    : rawAccountId;
   const accessKeyId = getEnv("R2_ACCESS_KEY_ID");
   const secretAccessKey = getEnv("R2_SECRET_ACCESS_KEY");
 
