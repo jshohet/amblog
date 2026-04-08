@@ -47,8 +47,8 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   icons: {
-    icon: "/amblog.png",
-    shortcut: "/amblog.png",
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
     apple: "/amblog.png",
   },
   openGraph: {
