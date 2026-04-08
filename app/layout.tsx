@@ -7,6 +7,7 @@ import PostProvider from "./providers/postProvider";
 import SelectedPostProvider from "./providers/selectedPostProvider";
 import Header from "./components/header/Header";
 import EditorStateProvider from "./providers/editorStateProvider";
+import { legalLinks } from "./components/footer/legalLinks";
 
 const libreBaskerville = Libre_Baskerville({
   weight: ["400", "700"],
@@ -84,12 +85,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const currentYear = new Date().getFullYear();
-  const footerLinks = [
-    { href: "/privacy-notice", label: "Privacy Notice" },
-    { href: "/terms-of-use", label: "Terms of Use" },
-    { href: "/cookie-notice", label: "Cookie Notice" },
-    { href: "/contact-data-requests", label: "Contact & Data Requests" },
-  ];
 
   return (
     <html lang="en" className="bg-one">
@@ -103,10 +98,10 @@ export default function RootLayout({
                 <main className="flex-1">{children}</main>
                 <footer className="border-t border-three/20 bg-four px-4 py-6 text-sm text-white/80">
                   <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 text-center md:flex-row md:text-left">
-                    <p>Copyright {currentYear} JOsef Shoher</p>
+                    <p>Copyright {currentYear} Josef Shohet</p>
                     <nav aria-label="Legal links">
                       <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-                        {footerLinks.map((link) => (
+                        {legalLinks.map((link) => (
                           <li key={link.href}>
                             <Link
                               href={link.href}
