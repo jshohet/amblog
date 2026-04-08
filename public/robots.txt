@@ -1,0 +1,10 @@
+# robots.txt for Amblog
+# This file is a crawl preference for compliant bots only.
+# It is not an authorization mechanism and does not protect private routes.
+# Please avoid aggressive scraping or automated requests against API endpoints.
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /settings
+Disallow: /signOut

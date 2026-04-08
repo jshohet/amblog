@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Libre_Baskerville } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./providers/authProvider";
@@ -82,15 +83,42 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const currentYear = new Date().getFullYear();
+  const footerLinks = [
+    { href: "/privacy-notice", label: "Privacy Notice" },
+    { href: "/terms-of-use", label: "Terms of Use" },
+    { href: "/cookie-notice", label: "Cookie Notice" },
+    { href: "/contact-data-requests", label: "Contact & Data Requests" },
+  ];
+
   return (
     <html lang="en" className="bg-one">
-      <body className={libreBaskerville.className}>
+      <body
+        className={`${libreBaskerville.className} min-h-screen flex flex-col`}>
         <AuthProvider>
           <PostProvider>
             <EditorStateProvider>
               <SelectedPostProvider>
                 <Header />
-                {children}
+                <main className="flex-1">{children}</main>
+                <footer className="border-t border-three/20 bg-four px-4 py-6 text-sm text-white/80">
+                  <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 text-center md:flex-row md:text-left">
+                    <p>Copyright {currentYear} JOsef Shoher</p>
+                    <nav aria-label="Legal links">
+                      <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+                        {footerLinks.map((link) => (
+                          <li key={link.href}>
+                            <Link
+                              href={link.href}
+                              className="underline decoration-white/40 underline-offset-4 transition hover:text-white hover:decoration-white">
+                              {link.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </nav>
+                  </div>
+                </footer>
               </SelectedPostProvider>
             </EditorStateProvider>
           </PostProvider>
