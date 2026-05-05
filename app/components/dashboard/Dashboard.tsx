@@ -13,7 +13,7 @@ const Dashboard = async () => {
   return (
     <div className="w-full">
       {/* <Socials /> */}
-      <div className="px-75">
+      <div className="w-full flex flex-col items-center">
         <Welcome />
         <TiptapHandler />
       </div>

@@ -12,23 +12,20 @@ const TiptapHandler = () => {
 
   const params = useSearchParams().get("state");
 
-
   useEffect(() => {
     if (params === "imgur") {
       setUrlState(window.location.hash);
-    }   
+    }
   }, []);
-
 
   //redirect and save to localStorage for now
   //TODO - maybe use cookies instead
-  useEffect(() =>{
-    if(urlState && urlState.length > 0){
-      localStorage.setItem("imgur info", JSON.stringify(urlState.split('&')))
-      window.location.assign("http://localhost:3000/")
+  useEffect(() => {
+    if (urlState && urlState.length > 0) {
+      localStorage.setItem("imgur info", JSON.stringify(urlState.split("&")));
+      window.location.assign("http://localhost:3000/");
     }
-  }, [])
-
+  }, []);
 
   return (
     <div className="w-full flex flex-col items-center ">
@@ -47,7 +44,7 @@ const TiptapHandler = () => {
       </div>
       {openEditor && <Tiptap />}
       {!openEditor && (
-        <div className="w-full relative">
+        <div className="w-full flex">
           <RecentPost />
           <Archive />
         </div>

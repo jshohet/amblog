@@ -6,7 +6,13 @@ import { Pagination } from "@heroui/pagination";
 import { usePostContext } from "@/app/hooks/usePostContext";
 import axios from "axios";
 import { convertMoodToEmoji } from "@/app/utils/moodConversion";
-import { FaEdit, FaTrashAlt, FaTags } from "react-icons/fa";
+import {
+  FaEdit,
+  FaTrashAlt,
+  FaTags,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa";
 import { useSelectedPostContext } from "@/app/hooks/useSelectedPostContext";
 import { useEditorContext } from "@/app/hooks/useEditorStateContext";
 
@@ -141,7 +147,7 @@ const RecentPost = () => {
     : "";
 
   return (
-    <div className="mx-auto">
+    <div>
       {selectedPost.id === 0 ? (
         <div>
           <h2 className="text-xl mb-10 font-semibold text-five">
@@ -165,6 +171,7 @@ const RecentPost = () => {
               loop={true}
               disableAnimation={false}
               disableCursorAnimation={false}
+              dir="ltr"
               classNames={{
                 base: "mt-2 w-fit",
                 wrapper:
@@ -172,7 +179,7 @@ const RecentPost = () => {
                 item: "w-8 h-8 text-small rounded-none bg-transparent",
                 cursor: "hidden",
                 prev: "",
-                next: "rotate-180",
+                next: "",
               }}
             />
           </div>
