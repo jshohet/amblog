@@ -172,7 +172,7 @@ const RecentPost = () => {
                 item: "w-8 h-8 text-small rounded-none bg-transparent",
                 cursor: "hidden",
                 prev: "",
-                next: "",
+                next: "rotate-180",
               }}
             />
           </div>

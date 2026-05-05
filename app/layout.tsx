@@ -95,7 +95,9 @@ export default function RootLayout({
             <EditorStateProvider>
               <SelectedPostProvider>
                 <Header />
-                <main className="flex-1">{children}</main>
+                <main className="flex-1">
+                  <div className="mx-auto max-w-5xl px-4">{children}</div>
+                </main>
                 <footer className="border-t border-three/20 bg-four px-4 py-6 text-sm text-white/80">
                   <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 text-center md:flex-row md:text-left">
                     <p>Copyright {currentYear} Josef Shohet</p>

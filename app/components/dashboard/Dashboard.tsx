@@ -1,4 +1,3 @@
-
 import React from "react";
 
 import Welcome from "./Dashboard Components/Welcome";
@@ -11,15 +10,12 @@ import TiptapHandler from "./Dashboard Components/TiptapHandler";
 //archive display
 
 const Dashboard = async () => {
- 
-
   return (
     <div className="w-full">
-      <Socials />
+      {/* <Socials /> */}
       <div className="px-75">
         <Welcome />
         <TiptapHandler />
-        
       </div>
     </div>
   );
