@@ -171,7 +171,6 @@ const RecentPost = () => {
               loop={true}
               disableAnimation={false}
               disableCursorAnimation={false}
-              dir="ltr"
               classNames={{
                 base: "mt-2 w-fit",
                 wrapper:
@@ -180,6 +179,7 @@ const RecentPost = () => {
                 cursor: "hidden",
                 prev: "",
                 next: "",
+                chevronNext: "rotate-180",
               }}
             />
           </div>
