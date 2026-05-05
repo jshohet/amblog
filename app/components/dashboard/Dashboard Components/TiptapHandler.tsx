@@ -47,7 +47,7 @@ const TiptapHandler = () => {
       </div>
       {openEditor && <Tiptap />}
       {!openEditor && (
-        <div className="w-full flex">
+        <div className="w-full relative">
           <RecentPost />
           <Archive />
         </div>

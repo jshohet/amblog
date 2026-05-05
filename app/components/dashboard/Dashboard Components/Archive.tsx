@@ -93,7 +93,7 @@ const Archive = () => {
 
   return (
     <div
-      className="ml-24 h-fit p-4 rounded-lg shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)]"
+      className="absolute right-4 top-0 h-fit p-4 rounded-lg shadow-[0_4px_4px_0px_rgba(0,0,0,0.25)]"
       style={{
         background: `linear-gradient(180deg, #A38994 0%, #D1D0CC 100%)`,
       }}>

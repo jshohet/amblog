@@ -141,7 +141,7 @@ const RecentPost = () => {
     : "";
 
   return (
-    <div>
+    <div className="mx-auto">
       {selectedPost.id === 0 ? (
         <div>
           <h2 className="text-xl mb-10 font-semibold text-five">
